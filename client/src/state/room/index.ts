@@ -56,6 +56,8 @@ export class Room {
         });
 
         this._socket.on("disconnect", () => {
+            // emit to server
+            this._socket.emit("disconnect-alert", {username: this._username});
             // todo pretty toast popup
             dispatch({
                 type: '@@ROOM/MESSAGE_RECEIVE',
