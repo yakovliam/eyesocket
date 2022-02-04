@@ -1,0 +1,58 @@
+{
+  "name": "eyesocket",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@craco/craco": "^6.4.3",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^16.11.22",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "@types/uuid": "^8.3.4",
+    "craco-plugin-scoped-css": "^1.1.1",
+    "grommet": "^2.20.1",
+    "grommet-icons": "^4.7.0",
+    "node-sass": "^7.0.1",
+    "normalize.css": "^8.0.1",
+    "polished": "^4.1.4",
+    "react": "^17.0.2",
+    "react-device-detect": "^2.1.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "5.0.0",
+    "recoil": "^0.6.1",
+    "socket.io-client": "^4.4.1",
+    "styled-components": "^5.3.3",
+    "typescript": "^4.5.5",
+    "use-bus": "^2.3.1",
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "homepage": "https://yakovliam.github.io/eyesocket/"
+}

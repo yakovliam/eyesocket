@@ -1,0 +1,47 @@
+.app {
+  // fit to screen size
+  min-height: 100vh;
+  // hidden overflow
+  overflow: hidden;
+
+  // display
+  display: flex;
+  flex-direction: column;
+
+  .app-body {
+    // display
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: flex-start;
+    justify-content: center;
+
+    flex-grow: 1;
+
+    .app-body-box {
+
+      .messagelist-wrapper {
+        // padding
+        padding: 1rem;
+
+        // height
+        max-height: 40rem;
+        min-height: 40rem;
+      }
+
+      .send-wrapper {
+        // display
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+
+        // padding
+        padding: 15px;
+
+        .send-box {
+          flex-grow: 1;
+        }
+      }
+    }
+  }
+}
