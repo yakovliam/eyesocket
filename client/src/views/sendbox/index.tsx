@@ -1,27 +1,14 @@
 import {Keyboard, TextInput} from "grommet";
 import {useState} from "react";
-import useBus, {dispatch} from "use-bus";
-import {room} from "../../state";
+import {dispatch} from "use-bus";
 
 export function SendBox() {
     const [value, setValue] = useState("");
-
-    useBus("@@CLIENT/SEND_MESSAGE_ACTION", () => {
-        if (!value) {
-            return;
-        }
-
-        // clear value
-        setValue("");
-
-        room.sendMessage(value);
-    }, [value, room]);
 
     return (
         <div>
             <Keyboard
                 onEnter={() => dispatch({type: "@@CLIENT/SEND_MESSAGE_ACTION"})}>
-
                 <TextInput
                     placeholder="Type your message here..."
                     value={value}
@@ -29,7 +16,6 @@ export function SendBox() {
                         setValue(event.target.value);
                     }}
                 />
-
             </Keyboard>
         </div>
     );

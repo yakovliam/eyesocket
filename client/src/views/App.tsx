@@ -7,6 +7,7 @@ import {SendBox} from "./sendbox";
 import {Send} from "grommet-icons";
 import {MessageList} from "./messagelist";
 import {dispatch} from "use-bus";
+import {ServerSelector} from "./serverselector";
 
 function App() {
     if (isMobile) {
@@ -36,6 +37,10 @@ function App() {
                             dispatch({type: "@@CLIENT/SEND_MESSAGE_ACTION"})
                         }}/>
                     </div>
+                </Box>
+
+                <Box className={"app-serverselector-box"} width={"medium"} direction={"column"} elevation={"medium"}>
+                    <ServerSelector/>
                 </Box>
             </div>
         </div>

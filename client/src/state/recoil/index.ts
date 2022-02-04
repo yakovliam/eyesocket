@@ -1,8 +1,8 @@
-// import {atom} from "recoil";
-// import {Room} from "../room";
-//
-// export const roomState = atom({
-//     key: 'roomState',
-//     default: new Room("user-" + Math.random() * (9999 - 1000) + 1000, ""),
-// });
-export const DEFAULT_UNUSED = {};
+import {atom} from "recoil";
+import {User} from "../user/user";
+import {v4} from "uuid";
+
+export const userState = atom({
+    key: 'userState',
+    default: new User("user-" + Math.random() * (99999 - 10000) + 10000, v4())
+});

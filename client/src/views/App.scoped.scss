@@ -18,6 +18,18 @@
 
     flex-grow: 1;
 
+    // gap
+    gap: 1rem;
+
+    .app-serverselector-box {
+      // height
+      max-height: 40rem;
+      min-height: 40rem;
+
+      // padding
+      padding: 20px;
+    }
+
     .app-body-box {
 
       .messagelist-wrapper {

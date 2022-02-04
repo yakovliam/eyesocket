@@ -12,10 +12,14 @@ import {RecoilRoot} from "recoil";
 
 const theme = {
     global: {
+        colors: {
+            serverButton: "#9a9a9a",
+            roomButton: "#9a9a9a",
+        },
         font: {
             family: 'Roboto',
             size: '14px',
-            height: '20px',
+            height: '20px'
         },
     },
     button: {
