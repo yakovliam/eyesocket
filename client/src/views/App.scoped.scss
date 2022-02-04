@@ -26,8 +26,16 @@
       max-height: 40rem;
       min-height: 40rem;
 
+      // width
+      max-width: 22rem;
+      min-width: 22rem;
+      width: 100%;
+
       // padding
       padding: 20px;
+
+      // scroll overflow
+      overflow-y: auto;
     }
 
     .app-body-box {

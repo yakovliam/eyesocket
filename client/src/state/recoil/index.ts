@@ -1,15 +1,20 @@
 import {atom} from "recoil";
-import {User} from "../user";
-import {v4} from "uuid";
-import {ServerManager} from "../server/servermanager";
-import {Server} from "state/server";
+import {User} from "object/user";
+import {ServerManager} from "object/server/servermanager";
+import {Server} from "object/server";
+import {SocketManager} from "object/socket/socketmanager";
 
 export const userState = atom({
     key: 'userState',
-    default: new User("user-" + Math.random() * (99999 - 10000) + 10000, v4())
+    default: User.ANON
 });
 
 export const serverManagerState = atom({
     key: "serverManagerState",
     default: new ServerManager(new Array<Server>())
 });
+
+export const socketManagerState = atom({
+    key: "socketManagerState",
+    default: new SocketManager(User.ANON)
+})

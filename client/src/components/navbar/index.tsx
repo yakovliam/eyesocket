@@ -1,18 +1,34 @@
 import {Header, Box, TextInput, Button} from "grommet";
-import { Globe, Update} from "grommet-icons";
+import {Globe, Update} from "grommet-icons";
 import React, {useState} from "react";
 import {useRecoilState} from "recoil";
-import {userState} from "../../state/recoil";
-import {User} from "state/user";
+import {serverManagerState, socketManagerState, userState} from "state/recoil";
+import {User} from "object/user";
+import {ServerManager} from "object/server/servermanager";
+import {SocketManager} from "object/socket/socketmanager";
 
 export function NavBar() {
 
     const [username, setUsername] = useState("");
-    const [, setUser] = useRecoilState(userState);
+    const [user, setUser] = useRecoilState(userState);
+    const [, setServerManager] = useRecoilState(serverManagerState);
+    const [, setSocketManager] = useRecoilState(socketManagerState);
 
     const updateUsername = () => {
-        setUser((u) => {
-            return new User(username, u.uuid);
+        const newUser = new User(username, user.uuid);
+
+        setUser(() => {
+            return newUser;
+        });
+
+        // restart server manager
+        setServerManager(() => {
+            return new ServerManager([]);
+        });
+
+        // restart socket manager
+        setSocketManager(() => {
+            return new SocketManager(newUser);
         });
     }
 

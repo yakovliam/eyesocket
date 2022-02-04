@@ -1,4 +1,5 @@
 import {Room} from "./room";
+import {OnlineState} from "object/server/online-state";
 
 export class Server {
 
@@ -8,13 +9,17 @@ export class Server {
     // server name
     private _name: string;
 
+    // if the server is online or not or checking
+    private _onlineState: OnlineState;
+
     // server rooms
     private _rooms: Array<Room>;
 
     // constructor
-    constructor(host: string, name: string, rooms: Array<Room>) {
+    constructor(host: string, name: string, onlineState: OnlineState, rooms: Array<Room>) {
         this._host = host;
         this._name = name;
+        this._onlineState = onlineState;
         this._rooms = rooms;
     }
 
@@ -32,6 +37,14 @@ export class Server {
 
     set name(value: string) {
         this._name = value;
+    }
+
+    get onlineState(): OnlineState {
+        return this._onlineState;
+    }
+
+    set onlineState(value: OnlineState) {
+        this._onlineState = value;
     }
 
     get rooms(): Array<Room> {

@@ -1,4 +1,8 @@
+import {v4} from "uuid";
+
 export class User {
+
+    public static ANON: User = new User("user-" + Math.random() * (99999 - 10000) + 10000, v4())
 
     // username
     private _username: string;

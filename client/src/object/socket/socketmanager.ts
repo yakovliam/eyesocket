@@ -1,14 +1,12 @@
-import {Server} from "state/server";
+import {Server} from "object/server";
 import {io, Socket, SocketOptions} from "socket.io-client";
 import {ManagerOptions} from "socket.io-client/build/esm/manager";
-import {User} from "state/user";
-import {SocketEventRegistry} from "state/socket/registry";
-import {UserHandshakePacket} from "state/socket/handshake";
-import {ContentedMessage} from "state/message";
+import {User} from "object/user";
+import {SocketEventRegistry} from "./registry";
+import {UserHandshakePacket} from "./handshake";
 import {dispatch} from "use-bus";
-import {BusEventRegistry} from "state/bus/registry";
-import {ClientMessageEvent, ServerMessageEvent} from "state/socket/event";
-import {Room} from "state/server/room";
+import {BusEventRegistry} from "object/bus/registry";
+import {ClientMessageEvent, ServerMessageEvent} from "./event";
 
 export class SocketManager {
 
@@ -43,7 +41,7 @@ export class SocketManager {
             const socket = io(server.host, SocketManager.IO_OPTIONS);
 
             // register events
-            // todo
+            this.registerServerEvents(server, socket);
 
             // add to map
             this.connectedServers.set(server, socket);
@@ -61,10 +59,16 @@ export class SocketManager {
     private registerServerEvents(server: Server, socket: Socket) {
         // on disconnect or disconnect error, immediately remove from the map
         socket.on("connect_error", () => {
+            // dispatch via use-bus
+            dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
+
             this.connectedServers.delete(server)
         });
 
         socket.on("disconnect", () => {
+            // dispatch via use-bus
+            dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
+
             this.connectedServers.delete(server)
         });
 

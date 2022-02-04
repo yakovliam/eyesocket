@@ -1,4 +1,4 @@
-import {User} from "state/user";
+import {User} from "object/user";
 
 export class UserHandshakePacket {
 

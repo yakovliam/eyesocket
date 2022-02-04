@@ -1,5 +1,5 @@
-import {Room} from "state/server/room";
-import {ContentedMessage} from "state/message";
+import {Room} from "object/server/room";
+import {ContentedMessage} from "object/message";
 
 export class ServerMessageEvent {
 
