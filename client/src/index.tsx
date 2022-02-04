@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import 'normalize.css';
-import './index.css';
+import './index.scss';
 
 import App from './views/App';
 import reportWebVitals from './reportWebVitals';

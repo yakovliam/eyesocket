@@ -39,7 +39,7 @@ function App() {
                     </div>
                 </Box>
 
-                <Box className={"app-serverselector-box"} width={"medium"} direction={"column"} elevation={"medium"}>
+                <Box className={"app-serverselector-box"} width={"medium"} direction={"column"} elevation={"medium"} overflow={"scroll"}>
                     <ServerSelector/>
                 </Box>
             </div>

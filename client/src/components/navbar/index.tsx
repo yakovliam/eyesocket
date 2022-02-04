@@ -3,7 +3,7 @@ import { Globe, Update} from "grommet-icons";
 import React, {useState} from "react";
 import {useRecoilState} from "recoil";
 import {userState} from "../../state/recoil";
-import {User} from "../../state/user/user";
+import {User} from "state/user";
 
 export function NavBar() {
 

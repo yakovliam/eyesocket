@@ -1,4 +1,4 @@
-import {Box, Text} from "grommet";
+import {Box} from "grommet";
 import {useEffect, useRef} from "react";
 
 export function DisplayedMessage(props: any) {

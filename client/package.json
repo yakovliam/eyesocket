@@ -54,5 +54,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://yakovliam.github.io/eyesocket/"
+  "homepage": "https://yakovliam.github.io/eyesocket/",
+  "devDependencies": {
+    "tsconfig-paths": "^3.12.0"
+  }
 }

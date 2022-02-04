@@ -5,7 +5,7 @@ import {DisplayedMessage} from "./displayed-message";
 
 export function MessageList() {
     const defaultState: Array<any> = [];
-    const [messages, setMessages] = useState(defaultState);
+    const [messages,] = useState(defaultState);
 
     return (
         <div className={"message-list"}>
