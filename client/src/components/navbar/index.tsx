@@ -2,17 +2,17 @@ import {Header, Box, TextInput, Button} from "grommet";
 import {Globe, Update} from "grommet-icons";
 import React, {useState} from "react";
 import {useRecoilState} from "recoil";
-import {serverManagerState, socketManagerState, userState} from "state/recoil";
+import {userState} from "state/recoil";
 import {User} from "object/user";
-import {ServerManager} from "object/server/servermanager";
-import {SocketManager} from "object/socket/socketmanager";
+import {useServerManager} from "object/server/servermanager";
+import {useSocketManager} from "object/socket/socketmanager";
 
 export function NavBar() {
 
     const [username, setUsername] = useState("");
     const [user, setUser] = useRecoilState(userState);
-    const [, setServerManager] = useRecoilState(serverManagerState);
-    const [, setSocketManager] = useRecoilState(socketManagerState);
+    const [,, restartSocketManager] = useSocketManager();
+    const [, , updateServers] = useServerManager();
 
     const updateUsername = () => {
         const newUser = new User(username, user.uuid, undefined);
@@ -22,14 +22,10 @@ export function NavBar() {
         });
 
         // restart server manager
-        setServerManager(() => {
-            return new ServerManager([]);
-        });
+        updateServers([]);
 
         // restart socket manager
-        setSocketManager(() => {
-            return new SocketManager(newUser);
-        });
+        restartSocketManager(newUser);
     }
 
     return (

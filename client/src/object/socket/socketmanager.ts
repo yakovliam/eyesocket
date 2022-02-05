@@ -8,14 +8,15 @@ import {dispatch} from "use-bus";
 import {BusEventRegistry} from "object/bus/registry";
 import {ClientJoinRoomEvent, ClientLeaveRoomEvent, ClientMessageEvent, ServerMessageEvent} from "./event";
 import {Room} from "object/server/room";
+import {useState} from "react";
 
-export class SocketManager {
+class SocketManager {
 
     private static IO_OPTIONS: Partial<ManagerOptions & SocketOptions> = {withCredentials: false, reconnection: false};
 
     // servers that are currently connected
-    private connectedServers: Map<Server, Socket>;
-
+    // <host, socket>
+    private connectedServers: Map<string, Socket>;
 
     /*
      * current user
@@ -29,13 +30,13 @@ export class SocketManager {
     private readonly user: User;
 
     constructor(user: User) {
-        this.connectedServers = new Map<Server, Socket>();
+        this.connectedServers = new Map<string, Socket>();
         this.user = user;
     }
 
     public connectToServer(server: Server) {
         // if already in connected servers, disconnect and reconnect
-        if (this.connectedServers.has(server)) {
+        if (this.connectedServers.has(server.host)) {
             // disconnect
             this.disconnectFromServer(server);
         }
@@ -47,14 +48,14 @@ export class SocketManager {
         this.registerServerEvents(server, socket);
 
         // add to map
-        this.connectedServers.set(server, socket);
+        this.connectedServers.set(server.host, socket);
     }
 
     public disconnectFromServer(server: Server) {
-        if (this.connectedServers.has(server)) {
-            this.connectedServers.get(server)?.disconnect();
+        if (this.connectedServers.has(server.host)) {
+            this.connectedServers.get(server.host)?.disconnect();
             // remove from map
-            this.connectedServers.delete(server);
+            this.connectedServers.delete(server.host);
         }
     }
 
@@ -89,13 +90,13 @@ export class SocketManager {
         });
     }
 
-    private sendMessage(server: Server, clientMessageEvent: ClientMessageEvent) {
-        if (!this.connectedServers.has(server)) {
+    public sendMessage(server: Server, clientMessageEvent: ClientMessageEvent) {
+        if (!this.connectedServers.has(server.host)) {
             return;
         }
 
         // get socket
-        const serverSocket = this.connectedServers.get(server);
+        const serverSocket = this.connectedServers.get(server.host);
 
         if (serverSocket === undefined || !serverSocket.connected) {
             return;
@@ -105,13 +106,13 @@ export class SocketManager {
         serverSocket.emit(SocketEventRegistry.MESSAGE, clientMessageEvent);
     }
 
-    private joinRoom(server: Server, room: Room) {
-        if (!this.connectedServers.has(server)) {
+    public joinRoom(server: Server, room: Room) {
+        if (!this.connectedServers.has(server.host)) {
             return;
         }
 
         // get socket
-        const serverSocket = this.connectedServers.get(server);
+        const serverSocket = this.connectedServers.get(server.host);
 
         if (serverSocket === undefined || !serverSocket.connected) {
             return;
@@ -121,13 +122,13 @@ export class SocketManager {
         serverSocket.emit(SocketEventRegistry.JOIN_ROOM, new ClientJoinRoomEvent(room));
     }
 
-    private leaveRoom(server: Server, room: Room) {
-        if (!this.connectedServers.has(server)) {
+    public leaveRoom(server: Server, room: Room) {
+        if (!this.connectedServers.has(server.host)) {
             return;
         }
 
         // get socket
-        const serverSocket = this.connectedServers.get(server);
+        const serverSocket = this.connectedServers.get(server.host);
 
         if (serverSocket === undefined || !serverSocket.connected) {
             return;
@@ -138,6 +139,25 @@ export class SocketManager {
     }
 
     public isConnected(server: Server) {
-        return this.connectedServers.has(server) && this.connectedServers.get(server)?.connected;
+        return this.connectedServers.has(server.host) && this.connectedServers.get(server.host)?.connected;
+    }
+
+    public disconnectFromAll() {
+        this.connectedServers.forEach(s => {
+            s.disconnect();
+        })
     }
 }
+
+const initSocketManager: SocketManager = new SocketManager(User.ANON);
+
+export const useSocketManager = () => {
+    const [socketManager, setSocketManager] = useState(initSocketManager);
+
+    const restartSocketManager = (user: User) => {
+        socketManager.disconnectFromAll();
+        setSocketManager(new SocketManager(user));
+    }
+
+    return [socketManager, setSocketManager, restartSocketManager] as const;
+};

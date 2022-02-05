@@ -1,20 +1,13 @@
 import {atom} from "recoil";
 import {User} from "object/user";
-import {ServerManager} from "object/server/servermanager";
-import {Server} from "object/server";
-import {SocketManager} from "object/socket/socketmanager";
+import {Room} from "object/server/room";
 
 export const userState = atom({
     key: 'userState',
     default: User.ANON
 });
 
-export const serverManagerState = atom({
-    key: "serverManagerState",
-    default: new ServerManager(new Array<Server>())
+export const currentRoomState = atom({
+    key: "currentRoomState",
+    default: new Room("", "")
 });
-
-export const socketManagerState = atom({
-    key: "socketManagerState",
-    default: new SocketManager(User.ANON)
-})

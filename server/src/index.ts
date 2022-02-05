@@ -9,6 +9,7 @@ import clientManager from "./client/client-manager";
 import {Client} from "./client";
 import cors from "cors";
 import {ClientJoinRoomEvent, ClientLeaveRoomEvent, ClientMessageEvent} from "./object/socket/event";
+import {parseClientJoinRoomEvent, parseClientLeaveRoomEvent, parseClientMessage} from "./util/websocket-parser";
 
 const index = express();
 const server = http.createServer(index);
@@ -54,16 +55,16 @@ io.on('connection', (socket: Socket) => {
     });
 
     // on message
-    socket.on(SocketEventRegistry.MESSAGE, (message: ClientMessageEvent) => {
-        const clientMessageEvent: ClientMessageEvent = message as ClientMessageEvent;
+    socket.on(SocketEventRegistry.MESSAGE, (message: any) => {
+        const clientMessageEvent: ClientMessageEvent = parseClientMessage(message);
 
         // broadcast message to all in the designated room
         io.to(clientMessageEvent.room.handle).emit("message", clientMessageEvent);
     });
 
     // on join room
-    socket.on(SocketEventRegistry.JOIN_ROOM, (event: ClientJoinRoomEvent) => {
-        const clientJoinRoomEvent: ClientJoinRoomEvent = event as ClientJoinRoomEvent;
+    socket.on(SocketEventRegistry.JOIN_ROOM, (event: any) => {
+        const clientJoinRoomEvent: ClientJoinRoomEvent = parseClientJoinRoomEvent(event);
 
         // get client
         const client = clientManager.getClient(socket);
@@ -82,8 +83,8 @@ io.on('connection', (socket: Socket) => {
     });
 
     // on leave room
-    socket.on(SocketEventRegistry.LEAVE_ROOM, (event: ClientLeaveRoomEvent) => {
-        const clientLeaveRoomEvent: ClientLeaveRoomEvent = event as ClientLeaveRoomEvent;
+    socket.on(SocketEventRegistry.LEAVE_ROOM, (event: any) => {
+        const clientLeaveRoomEvent: ClientLeaveRoomEvent = parseClientLeaveRoomEvent(event);
 
         // get client
         const client = clientManager.getClient(socket);

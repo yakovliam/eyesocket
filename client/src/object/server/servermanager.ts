@@ -1,6 +1,7 @@
 import {Server} from "./index";
+import {useState} from "react";
 
-export class ServerManager {
+class ServerManager {
 
     // servers
     private _servers: Array<Server>;
@@ -18,3 +19,15 @@ export class ServerManager {
         this._servers = value;
     }
 }
+
+const initServerManager: ServerManager = new ServerManager([]);
+
+export const useServerManager = () => {
+    const [serverManager, setServerManager] = useState(initServerManager);
+
+    let updateServers = (servers: Array<Server>) => {
+        setServerManager(new ServerManager(servers));
+    };
+
+    return [serverManager, setServerManager, updateServers] as const;
+};

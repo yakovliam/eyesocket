@@ -1,66 +1,49 @@
 import {Box, Button, Collapsible, TextInput} from "grommet";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {FormClose, StatusGoodSmall} from "grommet-icons";
 import loadingSvg from "assets/loading.svg";
 import {useRecoilState} from "recoil";
-import {serverManagerState, socketManagerState} from "state/recoil";
+import {currentRoomState} from "state/recoil";
 import {RequestRegistry} from "object/request/registry";
 import {ServerPingResponse} from "object/request";
 import {Server} from "object/server";
-import {ServerManager} from "object/server/servermanager";
 import {OnlineState} from "object/server/online-state";
 import {Room} from "object/server/room";
 import useBus from "use-bus";
 import {BusEventRegistry} from "object/bus/registry";
+import {useServerManager} from "object/server/servermanager";
+import {useSocketManager} from "object/socket/socketmanager";
 
 export function ServerSelector() {
 
     const [serverHostToAdd, setServerHostToAdd] = useState("");
-    const [serverManager, setServerManager] = useRecoilState(serverManagerState);
-    const [socketManager,] = useRecoilState(socketManagerState);
-    const timelineLoaded = useRef<boolean>(false);
+    const [socketManager,] = useSocketManager();
+    const [serverManager, , updateServers] = useServerManager();
+    const [currentRoom, setCurrentRoom] = useRecoilState(currentRoomState);
 
-    // listen for server disconnect event
-    useBus(
-        BusEventRegistry.SERVER_CONNECTION_FAILURE,
-        (data) => {
-            const server: Server = data.payload as Server;
+    const updateServer = useCallback((oldServer: Server | undefined, newServer: Server) => {
+        let servers: Array<Server> = new Array<Server>(...serverManager.servers);
 
-            // set server to offline
-            const newServer: Server = new Server(server.host, server.name, OnlineState.OFFLINE, server.rooms);
+        if (oldServer) {
+            // remove old
+            servers = servers.filter(el => el.host !== oldServer.host);
+        }
 
-            // update server manager
-            updateServerManager(server, newServer);
-        },
-        [setServerManager, serverManager],
-    );
+        // add server
+        servers.push(newServer);
 
-    const updateServerManager = (oldServer: Server | undefined, newServer: Server) => {
-        setServerManager((serverManager) => {
-            let servers: Array<Server> = new Array<Server>(...serverManager.servers);
-
-            if (oldServer) {
-                // remove old
-                servers = servers.filter(el => el.host !== oldServer.host);
-            }
-
-            // add server
-            servers.push(newServer);
-
-            return new ServerManager(servers);
-        });
-    }
+        updateServers(servers);
+    }, [updateServers, serverManager]);
 
     const removeServer = (server: Server) => {
-        setServerManager((serverManager) => {
-            let servers: Array<Server> = new Array<Server>(...serverManager.servers);
-            // remove old
-            servers = servers.filter(el => el !== server);
-            return new ServerManager(servers);
-        });
+        let servers: Array<Server> = new Array<Server>(...serverManager.servers);
+        // remove old
+        servers = servers.filter(el => el !== server);
+
+        updateServers(servers);
     }
 
-    const checkAndUpdateServerStatus = (host: string, server: Server) => {
+    const checkAndUpdateServerStatus = useCallback((host: string, server: Server) => {
         // fetch server host to see if its online
         fetch(host + "/" + RequestRegistry.SERVER_PING, {method: 'GET'}).then(r => {
             r.json().then(data => {
@@ -73,16 +56,18 @@ export function ServerSelector() {
                 const serverPingResponse: ServerPingResponse = new ServerPingResponse(data._online, rooms);
 
                 // re-add server to server manager, but now it has room info and with online info
-                updateServerManager(server, new Server(server.host, server.name, serverPingResponse.online ? OnlineState.ONLINE : OnlineState.OFFLINE, serverPingResponse.rooms));
+                updateServer(server, new Server(server.host, server.name, serverPingResponse.online ? OnlineState.ONLINE : OnlineState.OFFLINE, serverPingResponse.rooms));
 
                 // connect to server
                 socketManager.connectToServer(server);
+            }).catch(e => {
+                console.error(e);
             });
         }).catch(e => {
             // re-add server to server manager, but now it's offline
-            updateServerManager(server, new Server(server.host, server.name, OnlineState.OFFLINE, []));
+            updateServer(server, new Server(server.host, server.name, OnlineState.OFFLINE, server.rooms));
         });
-    }
+    }, [socketManager, updateServer]);
 
     // add server
     const addServer = () => {
@@ -94,24 +79,44 @@ export function ServerSelector() {
         // add to server manager, but don't make it "online" yet
         const server = new Server(serverHostToAdd, "", OnlineState.CHECKING, []);
 
-        updateServerManager(undefined, server);
+        updateServer(undefined, server);
         checkAndUpdateServerStatus(serverHostToAdd, server);
     }
 
+    const joinRoom = (server: Server, room: Room) => {
+        // set current room
+        setCurrentRoom(room);
+        // join room in socket manager
+        socketManager.joinRoom(server, room);
+    }
+
+    // listen for server disconnect event
+    useBus(
+        BusEventRegistry.SERVER_CONNECTION_FAILURE,
+        (data) => {
+            const server: Server = data.payload as Server;
+
+            // get old server
+            const oldServer: Server | undefined = serverManager.servers.find(s => s.host === server.host);
+
+            // set server to offline
+            const newServer: Server = new Server(server.host, server.name, OnlineState.OFFLINE, oldServer ? oldServer.rooms : server.rooms);
+
+            // update server manager
+            updateServer(server, newServer);
+        },
+        [serverManager, updateServer],
+    );
+
     useEffect(() => {
-        if (!timelineLoaded.current) {
-            setInterval(() => {
-                console.log("checking");
-                // get servers that are offline
-                console.log("1");
-                const servers: Array<Server> = serverManager.servers.filter(s => s.onlineState === OnlineState.OFFLINE);
-                console.log("2- " + JSON.stringify(serverManager.servers));
-                servers.forEach(server => {
-                    checkAndUpdateServerStatus(server.host, server);
-                });
-            }, 5000);
-            timelineLoaded.current = true;
-        }
+        const interval = setInterval(() => {
+            const servers: Array<Server> = serverManager.servers.filter(s => s.onlineState === OnlineState.OFFLINE);
+            servers.forEach(server => {
+                checkAndUpdateServerStatus(server.host, server);
+            });
+
+        }, 1000);
+        return () => clearInterval(interval);
     }, [checkAndUpdateServerStatus, serverManager]);
 
     return (
@@ -148,8 +153,15 @@ export function ServerSelector() {
                                     {server.rooms.map(room => {
                                         return (
                                             <Box pad={"small"} key={room.handle}>
-                                                <Button color={"roomButton"}
-                                                        label={room.name ? room.name : room.handle}/>
+                                                <Button
+                                                    primary={currentRoom === room}
+                                                    color={"roomButton"}
+                                                    label={room.name ? room.name : room.handle}
+                                                    onClick={() => {
+                                                        // join room
+                                                        joinRoom(server, room);
+                                                    }}
+                                                />
                                             </Box>
                                         );
                                     })}
