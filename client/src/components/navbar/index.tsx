@@ -15,7 +15,7 @@ export function NavBar() {
     const [, setSocketManager] = useRecoilState(socketManagerState);
 
     const updateUsername = () => {
-        const newUser = new User(username, user.uuid);
+        const newUser = new User(username, user.uuid, undefined);
 
         setUser(() => {
             return newUser;

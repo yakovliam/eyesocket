@@ -6,7 +6,8 @@ import {SocketEventRegistry} from "./registry";
 import {UserHandshakePacket} from "./handshake";
 import {dispatch} from "use-bus";
 import {BusEventRegistry} from "object/bus/registry";
-import {ClientMessageEvent, ServerMessageEvent} from "./event";
+import {ClientJoinRoomEvent, ClientLeaveRoomEvent, ClientMessageEvent, ServerMessageEvent} from "./event";
+import {Room} from "object/server/room";
 
 export class SocketManager {
 
@@ -37,15 +38,16 @@ export class SocketManager {
         if (this.connectedServers.has(server)) {
             // disconnect
             this.disconnectFromServer(server);
-            // reconnect to server
-            const socket = io(server.host, SocketManager.IO_OPTIONS);
-
-            // register events
-            this.registerServerEvents(server, socket);
-
-            // add to map
-            this.connectedServers.set(server, socket);
         }
+
+        // reconnect to server
+        const socket = io(server.host, SocketManager.IO_OPTIONS);
+
+        // register events
+        this.registerServerEvents(server, socket);
+
+        // add to map
+        this.connectedServers.set(server, socket);
     }
 
     public disconnectFromServer(server: Server) {
@@ -62,14 +64,14 @@ export class SocketManager {
             // dispatch via use-bus
             dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
 
-            this.connectedServers.delete(server)
+            this.disconnectFromServer(server);
         });
 
         socket.on("disconnect", () => {
             // dispatch via use-bus
             dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
 
-            this.connectedServers.delete(server)
+            this.disconnectFromServer(server);
         });
 
         // on connection, send user handshake
@@ -78,7 +80,7 @@ export class SocketManager {
         });
 
         // on message
-        socket.on("message", (serverMessage) => {
+        socket.on(SocketEventRegistry.MESSAGE, (serverMessage) => {
             // construct server message event
             const serverMessageEvent: ServerMessageEvent = serverMessage as ServerMessageEvent;
 
@@ -100,7 +102,39 @@ export class SocketManager {
         }
 
         // emit to the server
-        serverSocket.emit("message", clientMessageEvent);
+        serverSocket.emit(SocketEventRegistry.MESSAGE, clientMessageEvent);
+    }
+
+    private joinRoom(server: Server, room: Room) {
+        if (!this.connectedServers.has(server)) {
+            return;
+        }
+
+        // get socket
+        const serverSocket = this.connectedServers.get(server);
+
+        if (serverSocket === undefined || !serverSocket.connected) {
+            return;
+        }
+
+        // emit to the server
+        serverSocket.emit(SocketEventRegistry.JOIN_ROOM, new ClientJoinRoomEvent(room));
+    }
+
+    private leaveRoom(server: Server, room: Room) {
+        if (!this.connectedServers.has(server)) {
+            return;
+        }
+
+        // get socket
+        const serverSocket = this.connectedServers.get(server);
+
+        if (serverSocket === undefined || !serverSocket.connected) {
+            return;
+        }
+
+        // emit to the server
+        serverSocket.emit(SocketEventRegistry.LEAVE_ROOM, new ClientLeaveRoomEvent(room));
     }
 
     public isConnected(server: Server) {
