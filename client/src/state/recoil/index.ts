@@ -1,13 +1,13 @@
 import {atom} from "recoil";
-import {User} from "object/user";
-import {Room} from "object/server/room";
+import {DEFAULT_USER} from "common/types/user";
+import {DEFAULT_ROOM} from "common/types/server/room";
 
 export const userState = atom({
     key: 'userState',
-    default: User.ANON
+    default: DEFAULT_USER
 });
 
 export const currentRoomState = atom({
     key: "currentRoomState",
-    default: new Room("", "")
+    default: DEFAULT_ROOM
 });

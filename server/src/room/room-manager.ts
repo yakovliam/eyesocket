@@ -1,5 +1,5 @@
-import {Room} from "../object/server/room";
 import clientManager from "../client/client-manager";
+import {Room} from "../../../common/types/server/room";
 
 class RoomManager {
 
@@ -50,15 +50,13 @@ class RoomManager {
     }
 }
 
-const r1: Room = new Room("main", "Main Room 1");
-const r2: Room = new Room("main2", "Main Room 2");
-const r3: Room = new Room("main3", "Main Room 3");
+const r1: Room = {handle: "main1", name: "Main Room 1"};
+const r2: Room = {handle: "main2", name: "Main Room 2"};
 
 
 const rooms: Array<Room> = new Array<Room>();
 rooms.push(r1);
 rooms.push(r2);
-rooms.push(r3);
 
 // create room manager
 const roomManager: RoomManager = new RoomManager(rooms);

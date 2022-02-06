@@ -1,6 +1,6 @@
 {
+  "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,21 +13,35 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    //    "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
     "baseUrl": "src",
     "paths": {
-      "assets/*": ["assets/*"],
-      "state/*": ["state/*"],
-      "object/*": ["object/*"]
-    }
+      "assets/*": [
+        "assets/*"
+      ],
+      "state/*": [
+        "state/*"
+      ],
+      "objects/*": [
+        "objects/*"
+      ],
+      "common/*": [
+        "../../common/*"
+      ]
+    },
+    "outDir": "./dist",
+    "rootDir": "."
   },
   "include": [
-    "src"
+    "src",
+    "src/svg.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../common/"
+    }
   ]
 }

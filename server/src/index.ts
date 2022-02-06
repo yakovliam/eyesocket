@@ -3,13 +3,12 @@ import {Socket} from "socket.io";
 import indexRouter from "./routes/index";
 import * as http from "http";
 import {Server} from "socket.io";
-import {SocketEventRegistry} from "./object/socket/registry";
-import {UserHandshakePacket} from "./object/socket/handshake";
 import clientManager from "./client/client-manager";
 import {Client} from "./client";
 import cors from "cors";
-import {ClientJoinRoomEvent, ClientLeaveRoomEvent, ClientMessageEvent} from "./object/socket/event";
-import {parseClientJoinRoomEvent, parseClientLeaveRoomEvent, parseClientMessage} from "./util/websocket-parser";
+import {SocketEventRegistry} from "../../common/types/socket/registry";
+import {UserHandshakePacket} from "../../common/types/socket/handshake";
+import {ClientJoinRoomEvent, ClientLeaveRoomEvent, ClientMessageEvent} from "../../common/types/socket/event";
 
 const index = express();
 const server = http.createServer(index);
@@ -55,16 +54,16 @@ io.on('connection', (socket: Socket) => {
     });
 
     // on message
-    socket.on(SocketEventRegistry.MESSAGE, (message: any) => {
-        const clientMessageEvent: ClientMessageEvent = parseClientMessage(message);
+    socket.on(SocketEventRegistry.MESSAGE, (message: ClientMessageEvent) => {
+        const clientMessageEvent: ClientMessageEvent = message as ClientMessageEvent;
 
         // broadcast message to all in the designated room
         io.to(clientMessageEvent.room.handle).emit("message", clientMessageEvent);
     });
 
     // on join room
-    socket.on(SocketEventRegistry.JOIN_ROOM, (event: any) => {
-        const clientJoinRoomEvent: ClientJoinRoomEvent = parseClientJoinRoomEvent(event);
+    socket.on(SocketEventRegistry.JOIN_ROOM, (event: ClientJoinRoomEvent) => {
+        const clientJoinRoomEvent: ClientJoinRoomEvent = event as ClientJoinRoomEvent;
 
         // get client
         const client = clientManager.getClient(socket);
@@ -83,8 +82,8 @@ io.on('connection', (socket: Socket) => {
     });
 
     // on leave room
-    socket.on(SocketEventRegistry.LEAVE_ROOM, (event: any) => {
-        const clientLeaveRoomEvent: ClientLeaveRoomEvent = parseClientLeaveRoomEvent(event);
+    socket.on(SocketEventRegistry.LEAVE_ROOM, (event: ClientLeaveRoomEvent) => {
+        const clientLeaveRoomEvent: ClientLeaveRoomEvent = event as ClientLeaveRoomEvent;
 
         // get client
         const client = clientManager.getClient(socket);

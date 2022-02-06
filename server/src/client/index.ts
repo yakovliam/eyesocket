@@ -1,6 +1,7 @@
-import {User} from "../object/user";
 import {Socket} from "socket.io";
-import {Room} from "../object/server/room";
+import {User} from "../../../common/types/user";
+import {Room} from "../../../common/types/server/room";
+
 
 export class Client {
 

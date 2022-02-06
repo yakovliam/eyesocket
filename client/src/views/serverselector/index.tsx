@@ -1,18 +1,18 @@
 import {Box, Button, Collapsible, TextInput} from "grommet";
 import {useCallback, useEffect, useState} from "react";
 import {FormClose, StatusGoodSmall} from "grommet-icons";
-import loadingSvg from "assets/loading.svg";
+import loadingSvg from "../../assets/loading.svg";
 import {useRecoilState} from "recoil";
 import {currentRoomState} from "state/recoil";
-import {RequestRegistry} from "object/request/registry";
-import {ServerPingResponse} from "object/request";
-import {Server} from "object/server";
-import {OnlineState} from "object/server/online-state";
-import {Room} from "object/server/room";
 import useBus from "use-bus";
-import {BusEventRegistry} from "object/bus/registry";
-import {useServerManager} from "object/server/servermanager";
-import {useSocketManager} from "object/socket/socketmanager";
+import {BusEventRegistry} from "objects/bus/registry";
+import {useServerManager} from "objects/server/servermanager";
+import {useSocketManager} from "objects/socket/socketmanager";
+import {Server} from "common/types/server";
+import {RequestRegistry} from "common/types/request/registry";
+import {Room} from "common/types/server/room";
+import {ServerPingResponse} from "common/types/request";
+import {OnlineState} from "common/types/server/online-state";
 
 export function ServerSelector() {
 
@@ -48,15 +48,22 @@ export function ServerSelector() {
         fetch(host + "/" + RequestRegistry.SERVER_PING, {method: 'GET'}).then(r => {
             r.json().then(data => {
                 // construct rooms
-                const rooms: Array<Room> = data._rooms.map((room: any) => {
-                    return new Room(room._handle, room._name);
+                const rooms: Array<Room> = data.rooms.map((room: any) => {
+                    return room as Room;
                 });
 
-                // reconstruct server ping response object
-                const serverPingResponse: ServerPingResponse = new ServerPingResponse(data._online, rooms);
+                // reconstruct server ping response objects
+                const serverPingResponse: ServerPingResponse = {online: data.online, rooms: rooms};
+
+                const newServer: Server = {
+                    host: server.host,
+                    name: server.name,
+                    onlineState: serverPingResponse.online ? OnlineState.ONLINE : OnlineState.OFFLINE,
+                    rooms: serverPingResponse.rooms
+                };
 
                 // re-add server to server manager, but now it has room info and with online info
-                updateServer(server, new Server(server.host, server.name, serverPingResponse.online ? OnlineState.ONLINE : OnlineState.OFFLINE, serverPingResponse.rooms));
+                updateServer(server, newServer);
 
                 // connect to server
                 socketManager.connectToServer(server);
@@ -64,8 +71,15 @@ export function ServerSelector() {
                 console.error(e);
             });
         }).catch(e => {
+            const newServer: Server = {
+                host: server.host,
+                name: server.name,
+                onlineState: OnlineState.OFFLINE,
+                rooms: server.rooms
+            };
+
             // re-add server to server manager, but now it's offline
-            updateServer(server, new Server(server.host, server.name, OnlineState.OFFLINE, server.rooms));
+            updateServer(server, newServer);
         });
     }, [socketManager, updateServer]);
 
@@ -77,7 +91,7 @@ export function ServerSelector() {
         }
 
         // add to server manager, but don't make it "online" yet
-        const server = new Server(serverHostToAdd, "", OnlineState.CHECKING, []);
+        const server: Server = {host: serverHostToAdd, name: "", onlineState: OnlineState.CHECKING, rooms: []}
 
         updateServer(undefined, server);
         checkAndUpdateServerStatus(serverHostToAdd, server);
@@ -100,7 +114,12 @@ export function ServerSelector() {
             const oldServer: Server | undefined = serverManager.servers.find(s => s.host === server.host);
 
             // set server to offline
-            const newServer: Server = new Server(server.host, server.name, OnlineState.OFFLINE, oldServer ? oldServer.rooms : server.rooms);
+            const newServer: Server = {
+                host: server.host,
+                name: server.name,
+                onlineState: OnlineState.OFFLINE,
+                rooms: oldServer ? oldServer.rooms : server.rooms
+            };
 
             // update server manager
             updateServer(server, newServer);
@@ -150,7 +169,7 @@ export function ServerSelector() {
                             </Box>
                             <Collapsible open={true}>
                                 <Box align={"end"} gap={"xsmall"}>
-                                    {server.rooms.map(room => {
+                                    {server.rooms.map((room: Room) => {
                                         return (
                                             <Box pad={"small"} key={room.handle}>
                                                 <Button

@@ -1,7 +1,7 @@
 import express from "express";
-import {RequestRegistry} from "../object/request/registry";
-import {ServerPingResponse} from "../object/request";
 import roomManager from "../room/room-manager";
+import {RequestRegistry} from "../../../common/types/request/registry";
+import {ServerPingResponse} from "../../../common/types/request";
 
 const router = express.Router();
 
@@ -12,8 +12,9 @@ router.get("/", (req, res, next) => {
 
 /* GET server ping */
 router.get("/" + RequestRegistry.SERVER_PING, (req, res, next) => {
-    // construct response object
-    res.send(new ServerPingResponse(true, roomManager.rooms)).status(200);
+    // construct response objects
+    const serverPingResponse: ServerPingResponse = {online: true, rooms: roomManager.rooms};
+    res.send(serverPingResponse).status(200);
 });
 
 export default router;
