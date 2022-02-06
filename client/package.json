@@ -57,6 +57,7 @@
   },
   "homepage": "https://yakovliam.github.io/eyesocket/",
   "devDependencies": {
+    "craco-alias": "^3.0.1",
     "tsconfig-paths": "^3.12.0"
   }
 }

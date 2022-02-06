@@ -8,11 +8,11 @@ import useBus from "use-bus";
 import {BusEventRegistry} from "objects/bus/registry";
 import {useServerManager} from "objects/server/servermanager";
 import {useSocketManager} from "objects/socket/socketmanager";
-import {Server} from "../../../../common/types/server";
-import {RequestRegistry} from "../../../../common/types/request/registry";
-import {Room} from "../../../../common/types/server/room";
-import {ServerPingResponse} from "../../../../common/types/request";
-import {OnlineState} from "../../../../common/types/server/online-state";
+import {Server} from "common/types/server";
+import {RequestRegistry} from "common/types/request/registry/index";
+import {Room} from "common/types/server/room/index";
+import {ServerPingResponse} from "common/types/request/index";
+import {OnlineState} from "common/types/server/online-state";
 
 export function ServerSelector() {
 
