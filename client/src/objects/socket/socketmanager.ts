@@ -3,18 +3,18 @@ import {ManagerOptions} from "socket.io-client/build/esm/manager";
 import {dispatch} from "use-bus";
 import {BusEventRegistry} from "../bus/registry";
 import {useState} from "react";
-import {User} from "common/types/user";
-import {Server} from "common/types/server";
-import {SocketEventRegistry} from "common/types/socket/registry";
-import {UserHandshakePacket} from "common/types/socket/handshake";
+import {User} from "../../../../common/types/user";
+import {Server} from "../../../../common/types/server";
+import {SocketEventRegistry} from "../../../../common/types/socket/registry";
+import {UserHandshakePacket} from "../../../../common/types/socket/handshake";
 import {
     ClientJoinRoomEvent,
     ClientLeaveRoomEvent,
     ClientMessageEvent,
     ServerMessageEvent
-} from "common/types/socket/event";
-import {Room} from "common/types/server/room";
-import {DEFAULT_USER} from "common/types/user";
+} from "../../../../common/types/socket/event";
+import {Room} from "../../../../common/types/server/room";
+import {DEFAULT_USER} from "../../../../common/types/user";
 
 class SocketManager {
 

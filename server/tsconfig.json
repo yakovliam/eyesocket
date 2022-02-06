@@ -1,7 +1,7 @@
 {
-  "extends": "../tsconfig-base.json",
-
   "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
     "esModuleInterop": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
@@ -11,7 +11,7 @@
     "paths": {
       "*": [
         "node_modules/*"
-      ],
+      ]
     }
   },
   "include": [
@@ -19,7 +19,7 @@
   ],
   "references": [
     {
-      "path": "../common",
+      "path": "../common"
     }
   ]
 }

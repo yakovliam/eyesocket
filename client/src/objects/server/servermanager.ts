@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Server} from "common/types/server";
+import {Server} from "../../../../common/types/server";
 
 class ServerManager {
 

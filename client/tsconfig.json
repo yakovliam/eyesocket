@@ -1,6 +1,7 @@
 {
-  "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
     "lib": [
       "dom",
       "dom.iterable",
@@ -14,7 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    //    "isolatedModules": true,
+    "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "src",
@@ -27,9 +28,6 @@
       ],
       "objects/*": [
         "objects/*"
-      ],
-      "common/*": [
-        "../../common/*"
       ]
     },
     "outDir": "./dist",
@@ -41,7 +39,7 @@
   ],
   "references": [
     {
-      "path": "../common/"
+      "path": "../common"
     }
   ]
 }

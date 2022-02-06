@@ -1,65 +1,25 @@
-const {
-    addAfterLoader,
-    removeLoaders,
-    loaderByName,
-    getLoaders,
-    throwUnexpectedConfigError,
-} = require('@craco/craco');
+// crago.config.js
+// see: https://github.com/sharegate/craco
 
-const throwError = (message) =>
-    throwUnexpectedConfigError({
-        packageName: 'craco',
-        githubRepo: 'gsoft-inc/craco',
-        message,
-        githubIssueQuery: 'webpack',
-    });
+const path = require("path");
+const fs = require("fs");
+
+const rewireTsLoader = require("craco-ts-loader");
+
+// helpers
+
+const appDirectory = fs.realpathSync(process.cwd());
+const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
 module.exports = {
-    webpack: {
-        configure: (webpackConfig, { paths }) => {
-            const { hasFoundAny, matches } = getLoaders(
-                webpackConfig,
-                loaderByName('babel-loader')
-            );
-            if (!hasFoundAny) throwError('failed to find babel-loader');
-
-            console.log('removing babel-loader');
-            const { hasRemovedAny, removedCount } = removeLoaders(
-                webpackConfig,
-                loaderByName('babel-loader')
-            );
-            if (!hasRemovedAny) throwError('no babel-loader to remove');
-            if (removedCount !== 2)
-                throwError('had expected to remove 2 babel loader instances');
-
-            console.log('adding ts-loader');
-
-            const tsLoader = {
-                test: /\.(js|mjs|jsx|ts|tsx)$/,
-                include: paths.appSrc,
-                loader: require.resolve('ts-loader'),
-                options: { transpileOnly: true, projectReferences: true },
-            };
-
-            const { isAdded: tsLoaderIsAdded } = addAfterLoader(
-                webpackConfig,
-                loaderByName('url-loader'),
-                tsLoader
-            );
-            if (!tsLoaderIsAdded) throwError('failed to add ts-loader');
-            console.log('added ts-loader');
-
-            console.log('adding non-application JS babel-loader back');
-            const { isAdded: babelLoaderIsAdded } = addAfterLoader(
-                webpackConfig,
-                loaderByName('ts-loader'),
-                matches[1].loader // babel-loader
-            );
-            if (!babelLoaderIsAdded)
-                throwError('failed to add back babel-loader for non-application JS');
-            console.log('added non-application JS babel-loader back');
-
-            return webpackConfig;
-        },
-    },
-};
+    plugins: [
+        //This is a craco plugin: https://github.com/sharegate/craco/blob/master/packages/craco/README.md#configuration-overview
+        { plugin: rewireTsLoader,
+            options: {
+                includes: [resolveApp("node_modules/isemail")], //put things you want to include in array here
+                excludes: [/(node_modules|bower_components)/] //things you want to exclude here
+                //you can omit include or exclude if you only want to use one option
+            }
+        }
+    ]
+}

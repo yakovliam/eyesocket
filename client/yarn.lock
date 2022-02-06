@@ -1071,6 +1071,15 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@craco/craco@^5.0.0":
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-5.9.0.tgz#dcd34330b558596a4841374743071b7fa041dce9"
+  integrity sha512-2Q8gIB4W0/nPiUxr9iAKUhGsFlXYN0/wngUdK1VWtfV2NtBv+yllNn2AjieaLbttgpQinuOYmDU65vocC0NMDg==
+  dependencies:
+    cross-spawn "^7.0.0"
+    lodash "^4.17.15"
+    webpack-merge "^4.2.2"
+
 "@craco/craco@^6.4.3":
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-6.4.3.tgz#784395b6ebab764056550a2860494d24c3abd44e"
@@ -3323,6 +3332,13 @@ cosmiconfig@^7, cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
+
+craco-ts-loader@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/craco-ts-loader/-/craco-ts-loader-0.1.0.tgz#527ce03c1d63c4b81d3d755c839ede53fd8ea17a"
+  integrity sha512-msGwtD3HWIIhu4/g5m2L+0S/lEZwclLhdOqpgsfxJKQ5QY4cTxjXolkjoDpWe+F3hdkmiDHePCiPB9A6p3zVRg==
+  dependencies:
+    "@craco/craco" "^5.0.0"
 
 create-require@^1.1.0:
   version "1.1.1"

@@ -5,8 +5,8 @@ import {useRecoilState} from "recoil";
 import {userState} from "state/recoil";
 import {useServerManager} from "objects/server/servermanager";
 import {useSocketManager} from "objects/socket/socketmanager";
-import {User} from "common/types/user";
-import {DEFAULT_ROOM} from "common/types/server/room";
+import {User} from "../../../../common/types/user";
+import {DEFAULT_ROOM} from "../../../../common/types/server/room";
 
 
 export function NavBar() {
