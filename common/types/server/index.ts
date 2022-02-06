@@ -1,6 +1,8 @@
 import {Room} from "./room";
 import {OnlineState} from "./online-state";
 
+export const DEFAULT_SERVER: Server = {host: "", name: "", onlineState: OnlineState.OFFLINE, rooms: []};
+
 export type Server = {
 
     // server host

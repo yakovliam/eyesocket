@@ -1,7 +1,14 @@
 import {Box} from "grommet";
 import {useEffect, useRef} from "react";
+import {Room} from "common/types/server/room/index";
+import {ContentedMessage} from "common/types/message/index";
 
-export function DisplayedMessage(props: any) {
+type displayedMessageProps = {
+    room: Room,
+    contentedMessage: ContentedMessage
+}
+
+export function DisplayedMessage(props: displayedMessageProps) {
 
     const ref: any = useRef(null);
 
@@ -13,6 +20,7 @@ export function DisplayedMessage(props: any) {
 
     return (
         <Box ref={ref} direction="row-responsive" gap="medium" align="center">
+            Hello
         </Box>
     );
 }

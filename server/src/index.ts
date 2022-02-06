@@ -8,7 +8,12 @@ import {Client} from "./client";
 import cors from "cors";
 import {SocketEventRegistry} from "../../common/types/socket/registry";
 import {UserHandshakePacket} from "../../common/types/socket/handshake";
-import {ClientJoinRoomEvent, ClientLeaveRoomEvent, ClientMessageEvent} from "../../common/types/socket/event";
+import {
+    ClientJoinRoomEvent,
+    ClientLeaveRoomEvent,
+    ClientMessageEvent,
+    ServerMessageEvent
+} from "../../common/types/socket/event";
 
 const index = express();
 const server = http.createServer(index);
@@ -54,11 +59,24 @@ io.on('connection', (socket: Socket) => {
     });
 
     // on message
-    socket.on(SocketEventRegistry.MESSAGE, (message: ClientMessageEvent) => {
+    socket.on(SocketEventRegistry.MESSAGE, (message: any) => {
+        // only allow 'UserMessage' FROM CLIENTS
+        if (message?.message?.type !== "user") {
+            console.warn("user tried to send a fraudulent message");
+            return;
+        }
+
         const clientMessageEvent: ClientMessageEvent = message as ClientMessageEvent;
 
+        // create server message event
+        const serverMessageEvent: ServerMessageEvent = {
+            isGlobal: false,
+            message: clientMessageEvent.message,
+            room: clientMessageEvent.room
+        };
+
         // broadcast message to all in the designated room
-        io.to(clientMessageEvent.room.handle).emit("message", clientMessageEvent);
+        io.to(clientMessageEvent.room.handle).emit("message", serverMessageEvent);
     });
 
     // on join room
@@ -100,7 +118,6 @@ io.on('connection', (socket: Socket) => {
         client.rooms.push(clientLeaveRoomEvent.room);
         socket.leave(clientLeaveRoomEvent.room.handle);
     });
-
 });
 
 server.listen(8080, () => {

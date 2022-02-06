@@ -15,6 +15,7 @@ import {
 } from "common/types/socket/event/index";
 import {Room} from "common/types/server/room/index";
 import {DEFAULT_USER} from "common/types/user/index";
+import {ServerMessageDispatchEvent} from "objects/bus/event";
 
 class SocketManager {
 
@@ -74,11 +75,12 @@ class SocketManager {
             this.disconnectFromServer(server);
         });
 
-        socket.on("disconnect", () => {
+        socket.on("disconnect", (reason) => {
+            // todo currently don't need this, it's most likely manual
             // dispatch via use-bus
-            dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
+            // dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
 
-            this.disconnectFromServer(server);
+            // this.disconnectFromServer(server);
         });
 
         // on connection, send user handshake
@@ -91,9 +93,13 @@ class SocketManager {
         socket.on(SocketEventRegistry.MESSAGE, (serverMessage) => {
             // construct server message event
             const serverMessageEvent: ServerMessageEvent = serverMessage as ServerMessageEvent;
+            const serverMessageDispatchEvent: ServerMessageDispatchEvent = {
+                serverMessageEvent: serverMessageEvent,
+                server: server
+            };
 
             // dispatch via use-bus
-            dispatch({type: BusEventRegistry.SERVER_MESSAGE_EVENT, payload: serverMessageEvent})
+            dispatch({type: BusEventRegistry.SERVER_MESSAGE_EVENT, payload: serverMessageDispatchEvent})
         });
     }
 

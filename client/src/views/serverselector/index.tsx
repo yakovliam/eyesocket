@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from "react";
 import {FormClose, StatusGoodSmall} from "grommet-icons";
 import loadingSvg from "../../assets/loading.svg";
 import {useRecoilState} from "recoil";
-import {currentRoomState} from "state/recoil";
+import {currentRoomState, currentServerState} from "state/recoil";
 import useBus from "use-bus";
 import {BusEventRegistry} from "objects/bus/registry";
 import {useServerManager} from "objects/server/servermanager";
@@ -20,9 +20,10 @@ export function ServerSelector() {
     const [socketManager,] = useSocketManager();
     const [serverManager, , updateServers] = useServerManager();
     const [currentRoom, setCurrentRoom] = useRecoilState(currentRoomState);
+    const [, setCurrentServer] = useRecoilState(currentServerState);
 
     const updateServer = useCallback((oldServer: Server | undefined, newServer: Server) => {
-        let servers: Array<Server> = new Array<Server>(...serverManager.servers);
+        let servers: Array<Server> = serverManager.servers;
 
         if (oldServer) {
             // remove old
@@ -100,6 +101,8 @@ export function ServerSelector() {
     const joinRoom = (server: Server, room: Room) => {
         // set current room
         setCurrentRoom(room);
+        // set current server
+        setCurrentServer(server);
         // join room in socket manager
         socketManager.joinRoom(server, room);
     }
@@ -163,6 +166,8 @@ export function ServerSelector() {
                                                     <img alt={"Loading"} src={loadingSvg} width={"24px"}/> :
                                                     <StatusGoodSmall color={"status-disabled"}/>)}/>
                                 <Button onClick={() => {
+                                    // disconnect from socket manager
+                                    socketManager.disconnectFromServer(server);
                                     // remove self (server) from manager
                                     removeServer(server);
                                 }} icon={<FormClose color={"roomXButton"}/>}/>
