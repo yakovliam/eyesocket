@@ -42,6 +42,9 @@ export function ServerSelector() {
         servers = servers.filter(el => el !== server);
 
         setServerManager(new ServerManager(servers));
+
+        // todo fix error with server going offline
+        // wrong place for a comment but I am in the middle of something
     }
 
     const checkAndUpdateServerStatus = useCallback((host: string, server: Server) => {

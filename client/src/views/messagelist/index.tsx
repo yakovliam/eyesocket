@@ -1,111 +1,86 @@
 import {Box} from "grommet";
 import "./MessageList.scoped.scss"
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilValue} from "recoil";
 import {currentRoomState, currentServerState, serverManagerState} from "state/recoil";
 import useBus from "use-bus";
 import {BusEventRegistry} from "objects/bus/registry";
-import {useEffect, useState} from "react";
-import {Server} from "common/types/server";
-import {Room} from "common/types/server/room/index";
+import {useState} from "react";
 import {ContentedMessage} from "common/types/message/index";
 import {ServerMessageDispatchEvent} from "objects/bus/event";
+import {Room} from "common/types/server/room/index";
+import {DisplayedMessage} from "./displayed-message";
 
 export function MessageList() {
 
-    const defaultMessagesValue: Map<Server, Map<Room, Array<ContentedMessage>>> = new Map<Server, Map<Room, Array<ContentedMessage>>>();
-    const [globalMessages, setGlobalMessages] = useState(defaultMessagesValue);
-    const currentServer = useRecoilValue(currentServerState);
-    const [currentRoom,] = useRecoilState(currentRoomState);
-    const [serverManager,] = useRecoilState(serverManagerState);
+    // <server host, Map<room handle, ContentedMessage[]>>
+    const defaultMessagesValue: Map<string, Map<string, Array<ContentedMessage>>> = new Map<string, Map<string, Array<ContentedMessage>>>();
 
-    const defaultCurrentRoomMessagesState: Array<ContentedMessage> = [];
-    const [currentRoomMessagesState, setCurrentRoomMessagesState] = useState(defaultCurrentRoomMessagesState);
+    // global messages
+    const [globalMessages, setGlobalMessages] = useState(defaultMessagesValue);
+
+    // current server
+    const currentServer = useRecoilValue(currentServerState);
+
+    // current room
+    const currentRoom = useRecoilValue(currentRoomState);
+
+    // server manager
+    const serverManager = useRecoilValue(serverManagerState);
 
     // listen for receive message event
     useBus(
         BusEventRegistry.SERVER_MESSAGE_EVENT,
         (data) => {
             const serverMessageDispatchEvent: ServerMessageDispatchEvent = data.payload;
-            const server: Server | undefined = serverManager.servers.find(s => s.host === serverMessageDispatchEvent.server.host);
 
-            if (server === undefined) {
-                // todo there's a problem...
-                return;
+            // get all applicable rooms
+            let rooms: Array<Room>;
+
+            // if it's global, use all rooms
+            if (serverMessageDispatchEvent.serverMessageEvent.isGlobal) {
+                const applicableRooms = serverManager.servers.find(s => s.host === serverMessageDispatchEvent.server.host)?.rooms;
+                rooms = applicableRooms === undefined ? [] : applicableRooms;
+            } else {
+                const applicableRoom = serverManager.servers.find(s => s.host === serverMessageDispatchEvent.server.host)?.rooms?.find(r => r.handle === serverMessageDispatchEvent.serverMessageEvent.room?.handle);
+                rooms = applicableRoom === undefined ? [] : [applicableRoom];
             }
+            // define a clone of the global message map
+            const roomMessageMap: Map<string, ContentedMessage[]> = globalMessages.has(serverMessageDispatchEvent.server.host) ?
+                globalMessages.get(serverMessageDispatchEvent.server.host)! : new Map<string, Array<ContentedMessage>>();
 
-            // get all rooms that the message should be sent in
-            const rooms: Array<Room | undefined> | undefined = serverMessageDispatchEvent.serverMessageEvent.isGlobal
-                ? serverManager.servers.find(s => s.host === server.host)?.rooms
-                : [server.rooms.find(r => r.handle === serverMessageDispatchEvent.serverMessageEvent.room?.handle)];
+            // loop through each applicable room and get the list of messages associated
+            rooms.forEach(room => {
+                // get associated messages that have already been sent
+                let messages: Array<ContentedMessage> | undefined = globalMessages.get(serverMessageDispatchEvent.server.host)?.get(room.handle);
 
-            if (rooms === undefined) {
-                return;
-            }
-
-
-            // loop through all applicable rooms to add the message
-            rooms.forEach((room: Room | undefined) => {
-                if (room === undefined) {
-                    return;
-                }
-
-                // get all messages in current server + room
-                let messages: Array<ContentedMessage> | undefined = globalMessages.get(serverMessageDispatchEvent.server)?.get(room);
-                // if there aren't any messages, make a new message array
+                // if undefined, just initialize empty
                 if (messages === undefined) {
                     messages = [];
                 }
 
-                // add the received message to the array of messages
+                // put the new message inside the array
                 messages.push(serverMessageDispatchEvent.serverMessageEvent.message);
 
-                // now that we've updated the messages list for that room, update the map
-                const newGlobalMessagesMap = globalMessages;
-                const newSubMap: Map<Room, Array<ContentedMessage>> = new Map<Room, Array<ContentedMessage>>();
-                newSubMap.set(room, messages);
-
-
-                newGlobalMessagesMap.set(serverMessageDispatchEvent.server, newSubMap);
-                // update
-                setGlobalMessages(newGlobalMessagesMap);
+                // update the room message map
+                roomMessageMap.set(room.handle, messages);
             });
 
-            // todo fix issue making it so component isn't force updating
+            // use our updated room message map to update the global map
+            const messageMap = new Map<string, Map<string, ContentedMessage[]>>(globalMessages);
+            messageMap.set(serverMessageDispatchEvent.server.host, roomMessageMap);
 
+            // update/set global message map
+            setGlobalMessages(messageMap);
         },
-        [globalMessages, currentServer, currentRoom, serverManager, setGlobalMessages]
+        [globalMessages, serverManager]
     );
-
-    useEffect(() => {
-        const roomMessages: Map<Room, Array<ContentedMessage>> | undefined = Array.from(globalMessages)
-            .filter((arr) => arr[0].host === currentServer.host)
-            .map((arr) => arr[1])[0];
-
-        if (roomMessages === undefined) {
-            setCurrentRoomMessagesState([]);
-            return;
-        }
-
-        const currentRoomMessages: ContentedMessage[] | undefined = Array.from(roomMessages)
-            .filter((arr) => arr[0].handle === currentRoom.handle)
-            .map((arr) => arr[1])[0];
-
-        if (currentRoomMessages === undefined) {
-            setCurrentRoomMessagesState([]);
-            return;
-        }
-
-        setCurrentRoomMessagesState(currentRoomMessages);
-
-    }, [setCurrentRoomMessagesState, globalMessages]);
-
 
     return (
         <div className={"message-list"}>
             <Box direction={"column"} gap={"small"}>
                 {
-                    currentRoomMessagesState.map((message, idx) => {
-                        return <p key={idx}>{message.content}</p>
+                    globalMessages.get(currentServer.host)?.get(currentRoom.handle)?.map((message, idx) => {
+                        return <DisplayedMessage contentedMessage={message} key={idx}/>
                     })
                 }
             </Box>

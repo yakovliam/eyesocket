@@ -14,6 +14,7 @@ import {
     ClientMessageEvent,
     ServerMessageEvent
 } from "../../common/types/socket/event";
+import {SystemMessage} from "../../common/types/message";
 
 const index = express();
 const server = http.createServer(index);
