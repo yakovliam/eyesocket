@@ -3,10 +3,10 @@ import {useCallback, useEffect, useState} from "react";
 import {FormClose, StatusGoodSmall} from "grommet-icons";
 import loadingSvg from "../../assets/loading.svg";
 import {useRecoilState} from "recoil";
-import {currentRoomState, currentServerState} from "state/recoil";
+import {currentRoomState, currentServerState, serverManagerState} from "state/recoil";
 import useBus from "use-bus";
 import {BusEventRegistry} from "objects/bus/registry";
-import {useServerManager} from "objects/server/servermanager";
+import {ServerManager} from "objects/server/servermanager";
 import {useSocketManager} from "objects/socket/socketmanager";
 import {Server} from "common/types/server";
 import {RequestRegistry} from "common/types/request/registry/index";
@@ -18,12 +18,12 @@ export function ServerSelector() {
 
     const [serverHostToAdd, setServerHostToAdd] = useState("");
     const [socketManager,] = useSocketManager();
-    const [serverManager, , updateServers] = useServerManager();
+    const [serverManager, setServerManager] = useRecoilState(serverManagerState);
     const [currentRoom, setCurrentRoom] = useRecoilState(currentRoomState);
     const [, setCurrentServer] = useRecoilState(currentServerState);
 
     const updateServer = useCallback((oldServer: Server | undefined, newServer: Server) => {
-        let servers: Array<Server> = serverManager.servers;
+        let servers: Array<Server> = new Array<Server>(...serverManager.servers);
 
         if (oldServer) {
             // remove old
@@ -33,15 +33,15 @@ export function ServerSelector() {
         // add server
         servers.push(newServer);
 
-        updateServers(servers);
-    }, [updateServers, serverManager]);
+        setServerManager(new ServerManager(servers));
+    }, [setServerManager, serverManager]);
 
     const removeServer = (server: Server) => {
         let servers: Array<Server> = new Array<Server>(...serverManager.servers);
         // remove old
         servers = servers.filter(el => el !== server);
 
-        updateServers(servers);
+        setServerManager(new ServerManager(servers));
     }
 
     const checkAndUpdateServerStatus = useCallback((host: string, server: Server) => {
