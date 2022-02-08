@@ -1,13 +1,14 @@
 {
   "extends": "./tsconfig.extend.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "module": "es6",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "moduleResolution": "Node",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
