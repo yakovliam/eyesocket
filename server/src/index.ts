@@ -18,6 +18,7 @@ import {callJoinRoomHooks, callMessageHooks} from "./bot/bot-hook";
 import {SystemMessage} from "common/types/message";
 import {Room} from "common/types/server/room";
 import {ExampleBot} from "./bot/example-bot";
+import helmet from "helmet";
 
 const index = express();
 const server = http.createServer(index);
@@ -34,6 +35,9 @@ const corsOptions = {
 };
 
 index.use(cors(corsOptions));
+
+// helmet
+index.use(helmet());
 
 // router
 index.use('/', indexRouter);

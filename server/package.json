@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "helmet": "^5.0.2",
     "morgan": "~1.9.1",
     "socket.io": "^4.4.1",
     "tsconfig-paths": "^3.12.0",
