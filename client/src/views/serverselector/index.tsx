@@ -3,21 +3,19 @@ import {useCallback, useEffect, useState} from "react";
 import {FormClose, StatusGoodSmall} from "grommet-icons";
 import loadingSvg from "../../assets/loading.svg";
 import {useRecoilState} from "recoil";
-import {currentRoomState, currentServerState, serverManagerState} from "state/recoil";
+import {currentRoomState, currentServerState, serverManagerState, socketManagerState} from "state/recoil";
 import useBus from "use-bus";
 import {BusEventRegistry} from "objects/bus/registry";
-import {ServerManager} from "objects/server/servermanager";
-import {useSocketManager} from "objects/socket/socketmanager";
-import {Server} from "common/types/server";
+import {DEFAULT_SERVER, Server} from "common/types/server";
 import {RequestRegistry} from "common/types/request/registry/index";
-import {Room} from "common/types/server/room/index";
+import {DEFAULT_ROOM, Room} from "common/types/server/room/index";
 import {ServerPingResponse} from "common/types/request/index";
 import {OnlineState} from "common/types/server/online-state";
 
 export function ServerSelector() {
 
     const [serverHostToAdd, setServerHostToAdd] = useState("");
-    const [socketManager,] = useSocketManager();
+    const [socketManager,] = useRecoilState(socketManagerState);
     const [serverManager, setServerManager] = useRecoilState(serverManagerState);
     const [currentRoom, setCurrentRoom] = useRecoilState(currentRoomState);
     const [, setCurrentServer] = useRecoilState(currentServerState);
@@ -33,7 +31,7 @@ export function ServerSelector() {
         // add server
         servers.push(newServer);
 
-        setServerManager(new ServerManager(servers));
+        setServerManager({servers: servers});
     }, [setServerManager, serverManager]);
 
     const removeServer = (server: Server) => {
@@ -41,10 +39,7 @@ export function ServerSelector() {
         // remove old
         servers = servers.filter(el => el !== server);
 
-        setServerManager(new ServerManager(servers));
-
-        // todo fix error with server going offline
-        // wrong place for a comment but I am in the middle of something
+        setServerManager({servers: servers});
     }
 
     const checkAndUpdateServerStatus = useCallback((host: string, server: Server) => {
@@ -102,6 +97,11 @@ export function ServerSelector() {
     }
 
     const joinRoom = (server: Server, room: Room) => {
+        // if already in a room
+        if (currentRoom !== DEFAULT_ROOM) {
+            socketManager.leaveRoom(server, currentRoom);
+        }
+
         // set current room
         setCurrentRoom(room);
         // set current server
@@ -169,6 +169,8 @@ export function ServerSelector() {
                                                     <img alt={"Loading"} src={loadingSvg} width={"24px"}/> :
                                                     <StatusGoodSmall color={"status-disabled"}/>)}/>
                                 <Button onClick={() => {
+                                    setCurrentRoom(DEFAULT_ROOM);
+                                    setCurrentServer(DEFAULT_SERVER);
                                     // disconnect from socket manager
                                     socketManager.disconnectFromServer(server);
                                     // remove self (server) from manager

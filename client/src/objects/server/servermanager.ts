@@ -1,23 +1,10 @@
-import {useState} from "react";
 import {Server} from "common/types/server";
 
-export class ServerManager {
+export const DEFAULT_SERVER_MANAGER: ServerManager = {servers: []};
 
+export type ServerManager = {
     // servers
-    private _servers: Array<Server>;
-
-    // constructor
-    constructor(servers: Array<Server>) {
-        this._servers = servers;
-    }
-
-    get servers(): Array<Server> {
-        return this._servers;
-    }
-
-    set servers(value: Array<Server>) {
-        this._servers = value;
-    }
+    servers: Array<Server>;
 }
 
 // const initServerManager: ServerManager = new ServerManager([]);

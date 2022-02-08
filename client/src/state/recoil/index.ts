@@ -2,7 +2,8 @@ import {atom} from "recoil";
 import {DEFAULT_USER} from "common/types/user/index";
 import {DEFAULT_ROOM} from "common/types/server/room/index";
 import {DEFAULT_SERVER} from "common/types/server";
-import {ServerManager} from "objects/server/servermanager";
+import {DEFAULT_SERVER_MANAGER} from "objects/server/servermanager";
+import {DEFAULT_SOCKET_MANAGER} from "objects/socket/socketmanager";
 
 export const userState = atom({
     key: 'userState',
@@ -20,6 +21,11 @@ export const currentServerState = atom({
 });
 
 export const serverManagerState = atom({
-   key: "serverManagerState",
-   default: new ServerManager([])
+    key: "serverManagerState",
+    default: DEFAULT_SERVER_MANAGER
+});
+
+export const socketManagerState = atom({
+   key: "socketManagerState",
+   default: DEFAULT_SOCKET_MANAGER
 });

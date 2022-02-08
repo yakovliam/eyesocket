@@ -8,6 +8,7 @@ import {Send} from "grommet-icons";
 import {MessageList} from "./messagelist";
 import {dispatch} from "use-bus";
 import {ServerSelector} from "./serverselector";
+import {BusEventRegistry} from "objects/bus/registry";
 
 function App() {
     if (isMobile) {
@@ -34,7 +35,7 @@ function App() {
                             <SendBox/>
                         </div>
                         <Button primary label="Send" icon={<Send/>} onClick={() => {
-                            dispatch({type: "@@CLIENT/SEND_MESSAGE_ACTION"})
+                            dispatch({type: BusEventRegistry.CLIENT_SEND_MESSAGE_ACTION})
                         }}/>
                     </div>
                 </Box>

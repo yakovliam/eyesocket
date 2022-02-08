@@ -1,7 +1,7 @@
 import {Box, Markdown, Text} from "grommet";
 import {ReactElement, useEffect, useRef} from "react";
 import {ContentedMessage, UserMessage} from "common/types/message/index";
-import {Icon, SettingsOption, System, User} from "grommet-icons";
+import {Actions, Icon, Robot, SettingsOption, System, User, UserSettings} from "grommet-icons";
 import {useRecoilValue} from "recoil";
 import {userState} from "state/recoil";
 
@@ -31,11 +31,11 @@ export function DisplayedMessage(props: displayedMessageProps) {
                 align = "start";
             }
         } else if (message.type === "system") {
-            align = "start";
+            align = "center";
         } else if (message.type === "bot") {
-            align = "center";
+            align = "start";
         } else {
-            align = "center";
+            align = "start";
         }
 
         return align;
@@ -47,32 +47,65 @@ export function DisplayedMessage(props: displayedMessageProps) {
         let from: string;
 
         if (message.type === "user") {
-            icon = <User size={"large"}/>
             from = (message as UserMessage).sender.username;
         } else if (message.type === "system") {
-            icon = <System size={"large"}/>
             from = "System"
         } else if (message.type === "bot") {
-            icon = undefined;
+            // todo implement bot senders/entities
             from = "Bot"
         } else {
-            icon = undefined;
             from = "Unknown"
         }
 
-        return (
-            <Box align={"center"} direction={"row"} gap={"small"} justify={"around"}>
-                {icon}
-                <Text weight={"bold"}>
-                    {from}
-                </Text>
-                <Markdown>{message.content}</Markdown>
-            </Box>
-        );
+        if (message.type === "system") {
+            return (
+                <Box style={{opacity: "50%"}} align={"center"} direction={"row"} gap={"small"} justify={"around"} background={"light-1"}
+                     pad={"small"}>
+                    <Box direction={"row"} gap={"small"} align={"center"} justify={"around"}>
+                        <Actions size={"small"}/>
+                        <Text size={"xsmall"}>{from}</Text>
+                        <Markdown>{message.content}</Markdown>
+                    </Box>
+                </Box>
+            );
+        } else if (message.type === "bot") {
+            return (
+                <Box align={"center"} direction={"row"} gap={"small"} justify={"around"} background={"light-2"}
+                     round={"small"} pad={"small"}>
+                    <Box direction={"column"} gap={"small"}>
+                        <Markdown>{message.content}</Markdown>
+                        <Box direction={"row"} gap={"small"} justify={"center"} align={"center"}>
+                            <Robot size={"small"}/>
+                            <Text size={"xsmall"} weight={"bold"}>
+                                {from}
+                            </Text>
+                        </Box>
+                    </Box>
+                </Box>
+            );
+        } else if (message.type === "user") {
+            return (<Box align={"center"} direction={"row"} gap={"small"} justify={"around"} background={"light-2"}
+                         round={"small"} pad={"small"}>
+                    <Box direction={"column"} gap={"small"}>
+                        <Markdown>{message.content}</Markdown>
+                        <Box direction={"row"} gap={"small"} justify={"center"} align={"center"}>
+                            <User size={"small"}/>
+                            <Text size={"xsmall"} weight={"bold"}>
+                                {from}
+                            </Text>
+                        </Box>
+                    </Box>
+                </Box>
+            );
+        } else {
+            // this will never happen, but ya gotta cover the case
+            return <>{message.content}</>;
+        }
     }
 
     return (
-        <Box ref={ref} direction="row" gap={"xlarge"} align="center" justify={calculateAlignment(props.contentedMessage)}>
+        <Box ref={ref} direction="row" gap={"xlarge"} align="center"
+             justify={calculateAlignment(props.contentedMessage)}>
             {constructMessage(props.contentedMessage)}
         </Box>
     );

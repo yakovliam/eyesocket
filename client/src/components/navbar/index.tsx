@@ -2,32 +2,41 @@ import {Header, Box, TextInput, Button} from "grommet";
 import {Globe, Update} from "grommet-icons";
 import React, {useState} from "react";
 import {useRecoilState} from "recoil";
-import {serverManagerState, userState} from "state/recoil";
-import {useSocketManager} from "objects/socket/socketmanager";
+import {
+    currentRoomState,
+    currentServerState,
+    serverManagerState,
+    socketManagerState,
+    userState
+} from "state/recoil";
 import {User} from "common/types/user/index";
 import {DEFAULT_ROOM} from "common/types/server/room/index";
-import {ServerManager} from "objects/server/servermanager";
-
+import {DEFAULT_SERVER, Server} from "common/types/server";
+import {v4} from "uuid";
+import {SocketManager} from "objects/socket/socketmanager";
 
 export function NavBar() {
 
     const [username, setUsername] = useState("");
-    const [user, setUser] = useRecoilState(userState);
-    const [, , restartSocketManager] = useSocketManager();
+    const [, setUser] = useRecoilState(userState);
+    const [socketManager, setSocketManager] = useRecoilState(socketManagerState);
     const [, setServerManager] = useRecoilState(serverManagerState);
+    const [, setCurrentRoom] = useRecoilState(currentRoomState);
+    const [, setCurrentServer] = useRecoilState(currentServerState);
 
     const updateUsername = () => {
-        const newUser: User = {username: username, uuid: user.uuid, room: DEFAULT_ROOM};
+        setCurrentRoom(DEFAULT_ROOM);
+        setCurrentServer(DEFAULT_SERVER);
 
+        const newUser: User = {username: username, uuid: v4(), room: DEFAULT_ROOM};
         setUser(() => {
             return newUser;
         });
 
-        // restart server manager
-        setServerManager(new ServerManager([]));
+        setSocketManager(new SocketManager(newUser));
 
-        // restart socket manager
-        restartSocketManager(newUser);
+        // restart server manager
+        setServerManager({servers: new Array<Server>()});
     }
 
     return (

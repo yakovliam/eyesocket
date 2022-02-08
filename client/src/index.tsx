@@ -15,7 +15,8 @@ const theme = {
         colors: {
             serverButton: "#9a9a9a",
             roomButton: "#9a9a9a",
-            roomXButton: "#A2423D"
+            roomXButton: "#A2423D",
+            messageBackground: "#F2F2F2"
         },
         font: {
             family: 'Roboto',

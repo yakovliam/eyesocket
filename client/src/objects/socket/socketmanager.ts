@@ -2,8 +2,7 @@ import {io, Socket, SocketOptions} from "socket.io-client";
 import {ManagerOptions} from "socket.io-client/build/esm/manager";
 import {dispatch} from "use-bus";
 import {BusEventRegistry} from "../bus/registry";
-import {useState} from "react";
-import {User} from "common/types/user/index";
+import {DEFAULT_USER, User} from "common/types/user/index";
 import {Server} from "common/types/server";
 import {SocketEventRegistry} from "common/types/socket/registry/index";
 import {UserHandshakePacket} from "common/types/socket/handshake/index";
@@ -14,10 +13,9 @@ import {
     ServerMessageEvent
 } from "common/types/socket/event/index";
 import {Room} from "common/types/server/room/index";
-import {DEFAULT_USER} from "common/types/user/index";
 import {ServerMessageDispatchEvent} from "objects/bus/event";
 
-class SocketManager {
+export class SocketManager {
 
     private static IO_OPTIONS: Partial<ManagerOptions & SocketOptions> = {withCredentials: false, reconnection: false};
 
@@ -76,11 +74,10 @@ class SocketManager {
         });
 
         socket.on("disconnect", (reason) => {
-            // todo currently don't need this, it's most likely manual
             // dispatch via use-bus
-            // dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
+            dispatch({type: BusEventRegistry.SERVER_CONNECTION_FAILURE, payload: server})
 
-            // this.disconnectFromServer(server);
+            this.disconnectFromServer(server);
         });
 
         // on connection, send user handshake
@@ -160,19 +157,8 @@ class SocketManager {
     public disconnectFromAll() {
         this.connectedServers.forEach(s => {
             s.disconnect();
-        })
+        });
     }
 }
 
-const initSocketManager: SocketManager = new SocketManager(DEFAULT_USER);
-
-export const useSocketManager = () => {
-    const [socketManager, setSocketManager] = useState(initSocketManager);
-
-    const restartSocketManager = (user: User) => {
-        socketManager.disconnectFromAll();
-        setSocketManager(new SocketManager(user));
-    }
-
-    return [socketManager, setSocketManager, restartSocketManager] as const;
-};
+export const DEFAULT_SOCKET_MANAGER: SocketManager = new SocketManager(DEFAULT_USER);

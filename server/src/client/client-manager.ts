@@ -22,6 +22,17 @@ class ClientManager {
     public getClient(socket: Socket) {
         return this._clients.find(c => c.socket === socket);
     }
+
+    public updateClient(client: Client) {
+        let clients: Array<Client> = new Array<Client>(...this._clients);
+        clients = clients.filter(c => c.user.uuid !== client.user.uuid);
+        clients.push(client);
+        this._clients = clients;
+    }
+
+    public updateClients(clients: Array<Client>) {
+        this._clients = clients;
+    }
 }
 
 const clientManager: ClientManager = new ClientManager([]);
