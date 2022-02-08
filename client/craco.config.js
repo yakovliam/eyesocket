@@ -5,9 +5,6 @@ const path = require("path");
 const fs = require("fs");
 
 const rewireTsLoader = require("craco-ts-loader");
-const CracoAlias = require("craco-alias");
-
-// helpers
 
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
@@ -39,17 +36,5 @@ module.exports = {
                 //you can omit include or exclude if you only want to use one option
             }
         },
-        {
-            plugin: CracoAlias,
-            options: {
-                unsafeAllowModulesOutsideOfSrc: true,
-                source: "tsconfig",
-                // baseUrl SHOULD be specified
-                // plugin does not take it from tsconfig
-                baseUrl: "./src",
-                // tsConfigPath should point to the file where "baseUrl" and "paths" are specified
-                tsConfigPath: "tsconfig.json"
-            }
-        }
     ]
 }

@@ -1,6 +1,6 @@
 import {registerJoinRoomHooks, registerMessageHook} from "./bot-hook";
-import {ServerMessageEvent} from "../../../common/types/socket/event";
-import {BotMessage} from "../../../common/types/message";
+import {ServerMessageEvent} from "common/types/socket/event";
+import {BotMessage} from "common/types/message";
 import {Client} from "../client";
 import clientManager from "../client/client-manager";
 

@@ -1,7 +1,7 @@
 import {Box, Markdown, Text} from "grommet";
-import {ReactElement, useEffect, useRef} from "react";
+import {useEffect, useRef} from "react";
 import {ContentedMessage, UserMessage} from "common/types/message/index";
-import {Actions, Icon, Robot, SettingsOption, System, User, UserSettings} from "grommet-icons";
+import {Actions, Robot, User} from "grommet-icons";
 import {useRecoilValue} from "recoil";
 import {userState} from "state/recoil";
 
@@ -42,8 +42,6 @@ export function DisplayedMessage(props: displayedMessageProps) {
     }
 
     const constructMessage = (message: ContentedMessage) => {
-
-        let icon: ReactElement | undefined;
         let from: string;
 
         if (message.type === "user") {

@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.extend.json",
   "compilerOptions": {
     "module": "es6",
     "target": "es5",
@@ -20,6 +19,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "rootDir": ".",
     "baseUrl": "src",
     "paths": {
       "assets/*": [
@@ -30,21 +30,11 @@
       ],
       "objects/*": [
         "objects/*"
-      ],
-      "common/*": [
-        "../../common/*"
       ]
     },
-    "outDir": "./dist",
-    "rootDir": "."
   },
   "include": [
     "src",
     "src/svg.d.ts"
   ],
-  "references": [
-    {
-      "path": "../common"
-    }
-  ]
 }

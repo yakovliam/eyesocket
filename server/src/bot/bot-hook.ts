@@ -1,5 +1,5 @@
 import {Server, Socket} from "socket.io";
-import {ClientJoinRoomEvent, ClientMessageEvent} from "../../../common/types/socket/event";
+import {ClientJoinRoomEvent, ClientMessageEvent} from "common/types/socket/event";
 
 const messageHooks: Array<(io: Server, socket: Socket, clientMessageEvent: ClientMessageEvent) => void> = [];
 

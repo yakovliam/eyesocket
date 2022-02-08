@@ -6,17 +6,17 @@ import {Server} from "socket.io";
 import clientManager from "./client/client-manager";
 import {Client} from "./client";
 import cors from "cors";
-import {SocketEventRegistry} from "../../common/types/socket/registry";
-import {UserHandshakePacket} from "../../common/types/socket/handshake";
+import {SocketEventRegistry} from "common/types/socket/registry";
+import {UserHandshakePacket} from "common/types/socket/handshake";
 import {
     ClientJoinRoomEvent,
     ClientLeaveRoomEvent,
     ClientMessageEvent,
     ServerMessageEvent
-} from "../../common/types/socket/event";
+} from "common/types/socket/event";
 import {callJoinRoomHooks, callMessageHooks} from "./bot/bot-hook";
-import {SystemMessage} from "../../common/types/message";
-import {Room} from "../../common/types/server/room";
+import {SystemMessage} from "common/types/message";
+import {Room} from "common/types/server/room";
 import {ExampleBot} from "./bot/example-bot";
 
 const index = express();

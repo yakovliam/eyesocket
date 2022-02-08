@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5", // Or whatever you want
-    "module": "es6", // Or whatever you want
+    "target": "es5",
+    "module": "es6",
     "declaration": true,
     "declarationMap": true,
     "moduleResolution": "Node",
