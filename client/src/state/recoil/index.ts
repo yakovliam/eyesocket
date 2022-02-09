@@ -1,5 +1,5 @@
 import {atom} from "recoil";
-import {DEFAULT_USER} from "common/types/user/index";
+import {DEFAULT_USER} from "common/../../../../common/types/entity";
 import {DEFAULT_ROOM} from "common/types/server/room/index";
 import {DEFAULT_SERVER} from "common/types/server";
 import {DEFAULT_SERVER_MANAGER} from "objects/server/servermanager";

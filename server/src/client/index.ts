@@ -1,12 +1,12 @@
 import {Socket} from "socket.io";
-import {User} from "common/types/user";
+import {UserEntity} from "common/../../../common/types/entity";
 import {Room} from "common/types/server/room";
 
 
 export class Client {
 
     // user
-    private _user: User;
+    private _user: UserEntity;
 
     // socket
     private _socket: Socket;
@@ -15,17 +15,17 @@ export class Client {
     private _rooms: Array<Room>;
 
     // client
-    constructor(user: User, socket: Socket, rooms: Array<Room>) {
+    constructor(user: UserEntity, socket: Socket, rooms: Array<Room>) {
         this._user = user;
         this._socket = socket;
         this._rooms = rooms;
     }
 
-    get user(): User {
+    get user(): UserEntity {
         return this._user;
     }
 
-    set user(value: User) {
+    set user(value: UserEntity) {
         this._user = value;
     }
 

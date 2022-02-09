@@ -2,7 +2,7 @@ import {io, Socket, SocketOptions} from "socket.io-client";
 import {ManagerOptions} from "socket.io-client/build/esm/manager";
 import {dispatch} from "use-bus";
 import {BusEventRegistry} from "../bus/registry";
-import {DEFAULT_USER, User} from "common/types/user/index";
+import {DEFAULT_USER, UserEntity} from "common/../../../../common/types/entity";
 import {Server} from "common/types/server";
 import {SocketEventRegistry} from "common/types/socket/registry/index";
 import {UserHandshakePacket} from "common/types/socket/handshake/index";
@@ -32,9 +32,9 @@ export class SocketManager {
      * encapsulates security and anonymity, but it also makes it easier programmatically for the server to keep
      * up with user events being fired at it
      */
-    private readonly user: User;
+    private readonly user: UserEntity;
 
-    constructor(user: User) {
+    constructor(user: UserEntity) {
         this.connectedServers = new Map<string, Socket>();
         this.user = user;
     }

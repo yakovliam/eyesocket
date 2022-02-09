@@ -14,10 +14,9 @@ import {
     ClientMessageEvent,
     ServerMessageEvent
 } from "common/types/socket/event";
-import {callJoinRoomHooks, callMessageHooks} from "./bot/bot-hook";
+import {callJoinRoomHooks, callMessageHooks} from "./hooks/bot-hook";
 import {SystemMessage} from "common/types/message";
 import {Room} from "common/types/server/room";
-import {ExampleBot} from "./bot/example-bot";
 import helmet from "helmet";
 
 const index = express();
@@ -91,9 +90,9 @@ io.on('connection', (socket: Socket) => {
 
     // on message
     socket.on(SocketEventRegistry.MESSAGE, (message: any) => {
-        // only allow 'UserMessage' FROM CLIENTS
+        // if the user's message isn't a user message
         if (message?.message?.type !== "user") {
-            console.warn("user tried to send a fraudulent message");
+            // user tried to send a fraudulent message
             return;
         }
 
@@ -132,6 +131,7 @@ io.on('connection', (socket: Socket) => {
         clientManager.updateClient(client);
         socket.join(clientJoinRoomEvent.room.handle);
 
+        // join room message
         const roomJoinMessage: SystemMessage = {
             type: "system",
             content: String(client.user.username + " joined " + (clientJoinRoomEvent.room.name ? clientJoinRoomEvent.room.name : clientJoinRoomEvent.room.handle))
@@ -169,6 +169,7 @@ io.on('connection', (socket: Socket) => {
         clientManager.updateClient(client);
         socket.leave(clientLeaveRoomEvent.room.handle);
 
+        // leave room message
         const roomLeaveMessage: SystemMessage = {
             type: "system",
             content: String(client.user.username + " left " + (clientLeaveRoomEvent.room.name ? clientLeaveRoomEvent.room.name : clientLeaveRoomEvent.room.handle))
@@ -184,10 +185,6 @@ io.on('connection', (socket: Socket) => {
         io.to(clientLeaveRoomEvent.room.handle).emit("message", roomLeaveMessageEvent);
     });
 });
-
-
-// init bot
-const bot: ExampleBot = new ExampleBot();
 
 server.listen(8080, () => {
     console.log('listening on *:8080');

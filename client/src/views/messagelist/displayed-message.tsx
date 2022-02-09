@@ -32,7 +32,7 @@ export function DisplayedMessage(props: displayedMessageProps) {
             }
         } else if (message.type === "system") {
             align = "center";
-        } else if (message.type === "bot") {
+        } else if (message.type === "hooks") {
             align = "start";
         } else {
             align = "start";
@@ -48,8 +48,8 @@ export function DisplayedMessage(props: displayedMessageProps) {
             from = (message as UserMessage).sender.username;
         } else if (message.type === "system") {
             from = "System"
-        } else if (message.type === "bot") {
-            // todo implement bot senders/entities
+        } else if (message.type === "hooks") {
+            // todo implement hooks senders/entities
             from = "Bot"
         } else {
             from = "Unknown"
@@ -66,7 +66,7 @@ export function DisplayedMessage(props: displayedMessageProps) {
                     </Box>
                 </Box>
             );
-        } else if (message.type === "bot") {
+        } else if (message.type === "hooks") {
             return (
                 <Box align={"center"} direction={"row"} gap={"small"} justify={"around"} background={"light-2"}
                      round={"small"} pad={"small"}>

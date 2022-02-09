@@ -9,7 +9,7 @@ import {
     socketManagerState,
     userState
 } from "state/recoil";
-import {User} from "common/types/user/index";
+import {UserEntity} from "common/../../../../common/types/entity";
 import {DEFAULT_ROOM} from "common/types/server/room/index";
 import {DEFAULT_SERVER, Server} from "common/types/server";
 import {v4} from "uuid";
@@ -28,7 +28,7 @@ export function NavBar() {
         setCurrentRoom(DEFAULT_ROOM);
         setCurrentServer(DEFAULT_SERVER);
 
-        const newUser: User = {username: username, uuid: v4(), room: DEFAULT_ROOM};
+        const newUser: UserEntity = {username: username, uuid: v4(), room: DEFAULT_ROOM};
         setUser(() => {
             return newUser;
         });

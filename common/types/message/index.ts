@@ -2,7 +2,7 @@
  * This objects represents a message with content sent from an entity,
  * received explicitly by a server
  */
-import {User} from "../user/index";
+import {User} from "../../../../../common/types/entity";
 
 export type ContentedMessage = {
     type: string;

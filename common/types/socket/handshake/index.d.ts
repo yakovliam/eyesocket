@@ -1,4 +1,4 @@
-import { User } from "../../user";
+import { User } from "../../../../../../common/types/entity";
 export declare type UserHandshakePacket = {
     user: User;
 };
