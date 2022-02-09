@@ -3,19 +3,22 @@
     "target": "es5",
     "module": "commonjs",
     "esModuleInterop": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
+    "declarationMap": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
     "outDir": "./dist",
     "baseUrl": ".",
+    "preserveSymlinks": true,
     "paths": {
       "*": [
         "node_modules/*"
-      ]
+      ],
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "node_modules/common/**/*"
   ],
 }

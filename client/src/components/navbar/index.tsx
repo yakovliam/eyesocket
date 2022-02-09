@@ -33,6 +33,7 @@ export function NavBar() {
             return newUser;
         });
 
+        socketManager.disconnectFromAll();
         setSocketManager(new SocketManager(newUser));
 
         // restart server manager

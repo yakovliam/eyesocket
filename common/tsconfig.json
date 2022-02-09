@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "es6",
+    "module": "System",
     "declaration": true,
     "declarationMap": true,
     "moduleResolution": "Node",
     "outDir": "./dist",
+    "outFile": "./outfile/common.out.js",
     "composite": true
   }
 }
