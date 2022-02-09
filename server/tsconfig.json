@@ -8,6 +8,8 @@
     "declarationMap": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
+    // Ensure that Babel can safely transpile files in the TypeScript project
+    "isolatedModules": true,
     "outDir": "./dist",
     "baseUrl": ".",
     "preserveSymlinks": true,
@@ -19,6 +21,5 @@
   },
   "include": [
     "src/**/*",
-    "node_modules/common/**/*"
   ],
 }

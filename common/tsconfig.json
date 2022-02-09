@@ -4,9 +4,9 @@
     "module": "System",
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "outFile": "./outfile/common.out.js",
     "composite": true
   }
 }
