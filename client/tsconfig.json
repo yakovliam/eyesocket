@@ -30,6 +30,9 @@
       ],
       "objects/*": [
         "objects/*"
+      ],
+      "common/*": [
+        "common/*"
       ]
     },
   },

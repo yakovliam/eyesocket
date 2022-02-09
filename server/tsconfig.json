@@ -3,23 +3,23 @@
     "target": "es5",
     "module": "commonjs",
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
     // Ensure that Babel can safely transpile files in the TypeScript project
     "isolatedModules": true,
     "outDir": "./dist",
     "baseUrl": ".",
-    "preserveSymlinks": true,
+    "preserveSymlinks": false,
     "paths": {
       "*": [
         "node_modules/*"
       ],
+      "common/*": [
+        "./src/common/*"
+      ]
     }
   },
   "include": [
-    "src/**/*",
-  ],
+    "src/**/*"
+  ]
 }
