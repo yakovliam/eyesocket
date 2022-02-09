@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.scoped.scss';
 import {NavBar} from "../components/navbar";
-import {Box, Button} from "grommet";
+import {Box, Button, Notification} from "grommet";
 import {isMobile} from 'react-device-detect';
 import {SendBox} from "./sendbox";
 import {Send} from "grommet-icons";
@@ -9,8 +9,13 @@ import {MessageList} from "./messagelist";
 import {dispatch} from "use-bus";
 import {ServerSelector} from "./serverselector";
 import {BusEventRegistry} from "objects/bus/registry";
+import {useRecoilState} from "recoil";
+import {toasterState} from "state/recoil";
 
 function App() {
+    const [toaster, setToaster] = useRecoilState(toasterState);
+
+
     if (isMobile) {
         return (
             <Box direction={"row"} align={"center"} justify={"center"}>
@@ -21,6 +26,8 @@ function App() {
 
     return (
         <div className={"app"}>
+            {toaster.visible && <Notification toast title={toaster.title} status={toaster.status}
+                                              onClose={() => setToaster({...toaster, visible: false})}/>}
             <div>
                 <NavBar/>
             </div>

@@ -1,4 +1,4 @@
-import {Room} from "../server/room/index";
+import {Room} from "../server/room";
 import {v4} from "uuid";
 
 export const DEFAULT_USER: UserEntity = {type: "user", username: "user-" + Math.random() * (99999 - 10000) + 10000, uuid: v4(), room: undefined};

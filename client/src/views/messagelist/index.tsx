@@ -10,6 +10,9 @@ import {ServerMessageDispatchEvent} from "objects/bus/event";
 import {Room} from "common/types/server/room/index";
 import {DisplayedMessage} from "./displayed-message";
 
+// the number of messages at which the client will pop the ones on top of it
+const MESSAGE_POP_THRESHOLD: number = 50;
+
 export function MessageList() {
 
     // <server host, Map<room handle, ContentedMessage[]>>
@@ -60,6 +63,11 @@ export function MessageList() {
 
                 // put the new message inside the array
                 messages.push(serverMessageDispatchEvent.serverMessageEvent.message);
+
+                if (messages.length > MESSAGE_POP_THRESHOLD) {
+                    // pop last message (which happens to be first)
+                    messages.shift();
+                }
 
                 // update the room message map
                 roomMessageMap.set(room.handle, messages);

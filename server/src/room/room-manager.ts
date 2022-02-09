@@ -1,5 +1,5 @@
 import clientManager from "../client/client-manager";
-import {Room} from "common/types/server/room";
+import {Room} from "@common/types/server/room";
 
 class RoomManager {
 

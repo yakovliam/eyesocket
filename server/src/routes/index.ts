@@ -1,7 +1,7 @@
 import express from "express";
 import roomManager from "../room/room-manager";
-import {RequestRegistry} from "common/types/request/registry";
-import {ServerPingResponse} from "common/types/request";
+import {RequestRegistry} from "@common/types/request/registry";
+import {ServerPingResponse} from "@common/types/request";
 
 const router = express.Router();
 

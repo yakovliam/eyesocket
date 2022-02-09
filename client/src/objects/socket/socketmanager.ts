@@ -2,7 +2,7 @@ import {io, Socket, SocketOptions} from "socket.io-client";
 import {ManagerOptions} from "socket.io-client/build/esm/manager";
 import {dispatch} from "use-bus";
 import {BusEventRegistry} from "../bus/registry";
-import {DEFAULT_USER, UserEntity} from "common/../../../../common/types/entity";
+import {DEFAULT_USER, UserEntity} from "common/types/entity";
 import {Server} from "common/types/server";
 import {SocketEventRegistry} from "common/types/socket/registry/index";
 import {UserHandshakePacket} from "common/types/socket/handshake/index";

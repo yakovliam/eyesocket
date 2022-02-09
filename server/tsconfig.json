@@ -5,17 +5,15 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
-    // Ensure that Babel can safely transpile files in the TypeScript project
-    "isolatedModules": true,
     "outDir": "./dist",
     "baseUrl": ".",
-    "preserveSymlinks": false,
+    "preserveSymlinks": true,
     "paths": {
       "*": [
         "node_modules/*"
       ],
-      "common/*": [
-        "./src/common/*"
+      "@common/*": [
+        "src/common/*"
       ]
     }
   },

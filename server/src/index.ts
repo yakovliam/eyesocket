@@ -6,18 +6,19 @@ import {Server} from "socket.io";
 import clientManager from "./client/client-manager";
 import {Client} from "./client";
 import cors from "cors";
-import {SocketEventRegistry} from "common/types/socket/registry";
-import {UserHandshakePacket} from "common/types/socket/handshake";
+import {SocketEventRegistry} from "@common/types/socket/registry";
+import {UserHandshakePacket} from "@common/types/socket/handshake";
 import {
     ClientJoinRoomEvent,
     ClientLeaveRoomEvent,
     ClientMessageEvent,
     ServerMessageEvent
-} from "common/types/socket/event";
-import {callJoinRoomHooks, callMessageHooks} from "./hooks/bot-hook";
-import {SystemMessage} from "common/types/message";
-import {Room} from "common/types/server/room";
+} from "@common/types/socket/event";
+import {callJoinRoomHooks, callMessageHooks} from "./hooks/bot-hooks";
+import {SystemMessage} from "@common/types/message";
+import {Room} from "@common/types/server/room";
 import helmet from "helmet";
+import {GeneralBot} from "./bots/general-bot";
 
 const index = express();
 const server = http.createServer(index);
@@ -185,6 +186,8 @@ io.on('connection', (socket: Socket) => {
         io.to(clientLeaveRoomEvent.room.handle).emit("message", roomLeaveMessageEvent);
     });
 });
+
+new GeneralBot();
 
 server.listen(8080, () => {
     console.log('listening on *:8080');

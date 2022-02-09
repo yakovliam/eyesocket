@@ -2,7 +2,7 @@
  * This objects represents a message with content sent from an entity,
  * received explicitly by a server
  */
-import {User} from "../../../../../common/types/entity";
+import {BotEntity, UserEntity} from "../entity";
 
 export type ContentedMessage = {
     type: string;
@@ -10,11 +10,12 @@ export type ContentedMessage = {
 }
 
 export type UserMessage = ContentedMessage & {
-    sender: User
+    sender: UserEntity
     type: "user";
 }
 
 export type BotMessage = ContentedMessage & {
+    sender: BotEntity
     type: "bot"
 }
 

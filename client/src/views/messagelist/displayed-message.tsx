@@ -4,6 +4,7 @@ import {ContentedMessage, UserMessage} from "common/types/message/index";
 import {Actions, Robot, User} from "grommet-icons";
 import {useRecoilValue} from "recoil";
 import {userState} from "state/recoil";
+import {BotMessage} from "common/types/message";
 
 type displayedMessageProps = {
     contentedMessage: ContentedMessage
@@ -49,8 +50,7 @@ export function DisplayedMessage(props: displayedMessageProps) {
         } else if (message.type === "system") {
             from = "System"
         } else if (message.type === "hooks") {
-            // todo implement hooks senders/entities
-            from = "Bot"
+            from = (message as BotMessage).sender.username;
         } else {
             from = "Unknown"
         }

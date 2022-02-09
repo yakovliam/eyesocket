@@ -1,6 +1,6 @@
 import {Socket} from "socket.io";
-import {UserEntity} from "common/../../../common/types/entity";
-import {Room} from "common/types/server/room";
+import {UserEntity} from "@common/types/entity";
+import {Room} from "@common/types/server/room";
 
 
 export class Client {

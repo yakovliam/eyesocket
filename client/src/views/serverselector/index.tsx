@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from "react";
 import {FormClose, StatusGoodSmall} from "grommet-icons";
 import loadingSvg from "../../assets/loading.svg";
 import {useRecoilState} from "recoil";
-import {currentRoomState, currentServerState, serverManagerState, socketManagerState} from "state/recoil";
+import {currentRoomState, currentServerState, serverManagerState, socketManagerState, toasterState} from "state/recoil";
 import useBus from "use-bus";
 import {BusEventRegistry} from "objects/bus/registry";
 import {DEFAULT_SERVER, Server} from "common/types/server";
@@ -19,6 +19,7 @@ export function ServerSelector() {
     const [serverManager, setServerManager] = useRecoilState(serverManagerState);
     const [currentRoom, setCurrentRoom] = useRecoilState(currentRoomState);
     const [, setCurrentServer] = useRecoilState(currentServerState);
+    const [, setToaster] = useRecoilState(toasterState);
 
     const updateServer = useCallback((oldServer: Server | undefined, newServer: Server) => {
         let servers: Array<Server> = new Array<Server>(...serverManager.servers);
@@ -66,6 +67,13 @@ export function ServerSelector() {
 
                 // connect to server
                 socketManager.connectToServer(server);
+
+                // toaster
+                setToaster({
+                    status: "normal",
+                    visible: true,
+                    title: "You connected to " + (server.name ? server.name : server.host)
+                });
             }).catch(e => {
                 console.error(e);
             });
@@ -129,6 +137,16 @@ export function ServerSelector() {
 
             // update server manager
             updateServer(server, newServer);
+
+            // set current room and server to nothing
+            setCurrentServer(DEFAULT_SERVER);
+            setCurrentRoom(DEFAULT_ROOM);
+
+            setToaster({
+                status: "critical",
+                visible: true,
+                title: "You got disconnected from " + (server.name ? server.name : server.host)
+            });
         },
         [serverManager, updateServer],
     );

@@ -2,7 +2,14 @@ import {Keyboard, TextInput} from "grommet";
 import {useState} from "react";
 import useBus, {dispatch} from "use-bus";
 import {useRecoilState, useRecoilValue} from "recoil";
-import {currentRoomState, currentServerState, serverManagerState, socketManagerState, userState} from "state/recoil";
+import {
+    currentRoomState,
+    currentServerState,
+    serverManagerState,
+    socketManagerState,
+    toasterState,
+    userState
+} from "state/recoil";
 import {ClientMessageEvent} from "common/types/socket/event/index";
 import {UserMessage} from "common/types/message/index";
 import {DEFAULT_SERVER} from "common/types/server";
@@ -16,6 +23,7 @@ export function SendBox() {
     const currentServer = useRecoilValue(currentServerState);
     const currentRoom = useRecoilValue(currentRoomState);
     const currentUser = useRecoilValue(userState);
+    const [, setToaster] = useRecoilState(toasterState);
 
     // listen for client send message action
     useBus(
@@ -29,9 +37,9 @@ export function SendBox() {
                 return;
             }
 
-            // todo do fancy toast saying you need to join a room
             if (!currentServer || !currentRoom || currentServer === DEFAULT_SERVER || currentRoom === DEFAULT_ROOM ||
                 !serverManager.servers.some(s => s.host === currentServer.host) || !socketManager.isConnected(currentServer)) {
+                setToaster({status: "critical", title: "You need to join a room!", visible: true})
                 return;
             }
 

@@ -1,6 +1,6 @@
-import {User} from "../../../../../../common/types/entity";
+import {UserEntity} from "../../entity";
 
 export type UserHandshakePacket = {
     // the user
-    user: User;
+    user: UserEntity;
 }
