@@ -160,7 +160,7 @@ export function ServerSelector() {
                         <Box gap={"small"} flex={"grow"} key={server.host}>
                             {/* This button will toggle the opening/closing */}
                             <Box direction={"row"} gap={"xxsmall"}>
-                                <Button color={"serverButton"} style={{overflow: "hidden"}}
+                                <Button color={"serverButton"} style={{overflow: "scroll"}}
                                         label={server.name ? server.name : server.host} reverse/>
                                 <Button icon=
                                             {server.onlineState === OnlineState.ONLINE ? (
