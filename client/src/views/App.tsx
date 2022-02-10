@@ -2,7 +2,6 @@ import React from 'react';
 import './App.scoped.scss';
 import {NavBar} from "../components/navbar";
 import {Box, Button, Notification} from "grommet";
-import {isMobile} from 'react-device-detect';
 import {SendBox} from "./sendbox";
 import {Send} from "grommet-icons";
 import {MessageList} from "./messagelist";
@@ -14,15 +13,6 @@ import {toasterState} from "state/recoil";
 
 function App() {
     const [toaster, setToaster] = useRecoilState(toasterState);
-
-
-    if (isMobile) {
-        return (
-            <Box direction={"row"} align={"center"} justify={"center"}>
-                <p>This application can't be used on a mobile device.</p>
-            </Box>
-        );
-    }
 
     return (
         <div className={"app"}>

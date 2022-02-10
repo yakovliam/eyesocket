@@ -4,7 +4,7 @@ import {v4} from "uuid";
 export class Bot {
 
     // the bots' entity
-    private readonly botEntity: BotEntity;
+    protected readonly botEntity: BotEntity;
 
     // the bots' command handler
     private readonly commandHandler: CommandHandler;

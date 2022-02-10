@@ -26,30 +26,28 @@ export class CommandHandler {
         this.commandPrefix = commandPrefix;
         this.botEntity = botEntity;
         this.showCommandResultSystemMessage = showCommandResultSystemMessage;
+
+        this.initHook();
     }
 
     /**
      * Registers a command
      * @param command command
-     * @param preCommandExecutionCallback a callback to run before the command is actually executed.
-     * The result of this callback (boolean) will determine if the command is to be executed or not.
      */
-    public registerCommand(command: Command, preCommandExecutionCallback: ((clientMessageEvent: ClientMessageEvent) => boolean) | undefined) {
+    public registerCommand(command: Command) {
         this.commands.push(command);
+    }
 
+    public initHook() {
         // listen for message hooks
         registerMessageHook((io, socket, clientMessageEvent) => {
             if (!clientMessageEvent.message.content.startsWith(this.commandPrefix)) {
                 return;
             }
 
-            if (preCommandExecutionCallback && !preCommandExecutionCallback(clientMessageEvent)) {
-                return;
-            }
-
             const result: CommandResult = this.execute(io, socket, clientMessageEvent);
 
-            if (this.showCommandResultSystemMessage) {
+            if (this.showCommandResultSystemMessage && result.autoDisplaySystemResult) {
                 const message: SystemMessage = this.buildResultSystemMessage(result);
                 const messageEvent: ServerMessageEvent = {
                     message: message,
@@ -72,14 +70,14 @@ export class CommandHandler {
 
         // if there is nothing
         if (parts.length < 1) {
-            return {success: false, message: "Not a command"};
+            return {success: false, message: "Not a command", autoDisplaySystemResult: true};
         }
 
         // get the command applicable
-        const command: Command | undefined = this.getCommand(parts[0].replace("!", ""));
+        const command: Command | undefined = this.getCommand(parts[0].replace(this.commandPrefix, ""));
 
         if (command === undefined) {
-            return {success: false, message: "Not a command"};
+            return {success: false, message: "Not a command", autoDisplaySystemResult: true};
         }
 
         // compile arguments to the command

@@ -4,4 +4,7 @@ export type CommandResult = {
 
     // the message to return
     message: string;
+
+    // if the command result is to display in an auto message
+    autoDisplaySystemResult: boolean;
 }

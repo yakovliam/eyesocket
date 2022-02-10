@@ -24,6 +24,7 @@
     "react-markdown": "^8.0.0",
     "react-scripts": "5.0.0",
     "recoil": "^0.6.1",
+    "remark-emoji": "^3.0.2",
     "socket.io-client": "^4.4.1",
     "styled-components": "^5.3.3",
     "ts-loader": "^9.2.6",

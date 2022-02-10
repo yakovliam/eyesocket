@@ -53,11 +53,11 @@ export function ServerSelector() {
                 });
 
                 // reconstruct server ping response objects
-                const serverPingResponse: ServerPingResponse = {online: data.online, rooms: rooms};
+                const serverPingResponse: ServerPingResponse = {online: data.online, rooms: rooms, name: data.name};
 
                 const newServer: Server = {
                     host: server.host,
-                    name: server.name,
+                    name: serverPingResponse.name,
                     onlineState: serverPingResponse.online ? OnlineState.ONLINE : OnlineState.OFFLINE,
                     rooms: serverPingResponse.rooms
                 };
@@ -99,6 +99,8 @@ export function ServerSelector() {
 
         // add to server manager, but don't make it "online" yet
         const server: Server = {host: serverHostToAdd, name: "", onlineState: OnlineState.CHECKING, rooms: []}
+
+        setServerHostToAdd("");
 
         updateServer(undefined, server);
         checkAndUpdateServerStatus(serverHostToAdd, server);
@@ -178,7 +180,7 @@ export function ServerSelector() {
                         <Box gap={"small"} flex={"grow"} key={server.host}>
                             {/* This button will toggle the opening/closing */}
                             <Box direction={"row"} gap={"xxsmall"}>
-                                <Button color={"serverButton"} style={{overflow: "scroll"}}
+                                <Button color={"serverButton"} style={{overflowY: "scroll"}}
                                         label={server.name ? server.name : server.host} reverse/>
                                 <Button icon=
                                             {server.onlineState === OnlineState.ONLINE ? (

@@ -16,6 +16,10 @@
     align-content: flex-start;
     justify-content: center;
 
+    @media (max-width: 800px) {
+      flex-direction: column-reverse;
+    }
+
     flex-grow: 1;
 
     // gap

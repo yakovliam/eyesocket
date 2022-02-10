@@ -13,7 +13,7 @@ router.get("/", (req, res, next) => {
 /* GET server ping */
 router.get("/" + RequestRegistry.SERVER_PING, (req, res, next) => {
     // construct response objects
-    const serverPingResponse: ServerPingResponse = {online: true, rooms: roomManager.rooms};
+    const serverPingResponse: ServerPingResponse = {online: true, name: process.env.SERVER_NAME, rooms: roomManager.rooms};
     res.send(serverPingResponse).status(200);
 });
 

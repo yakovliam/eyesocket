@@ -19,6 +19,9 @@ import {SystemMessage} from "@common/types/message";
 import {Room} from "@common/types/server/room";
 import helmet from "helmet";
 import {GeneralBot} from "./bots/general-bot";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const index = express();
 const server = http.createServer(index);
@@ -189,6 +192,6 @@ io.on('connection', (socket: Socket) => {
 
 new GeneralBot();
 
-server.listen(8080, () => {
-    console.log('listening on *:8080');
+server.listen(process.env.PORT, () => {
+    console.log('listening on *:' + process.env.PORT);
 });

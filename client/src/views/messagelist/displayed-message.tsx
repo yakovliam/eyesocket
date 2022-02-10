@@ -33,7 +33,7 @@ export function DisplayedMessage(props: displayedMessageProps) {
             }
         } else if (message.type === "system") {
             align = "center";
-        } else if (message.type === "hooks") {
+        } else if (message.type === "bot") {
             align = "start";
         } else {
             align = "start";
@@ -49,7 +49,7 @@ export function DisplayedMessage(props: displayedMessageProps) {
             from = (message as UserMessage).sender.username;
         } else if (message.type === "system") {
             from = "System"
-        } else if (message.type === "hooks") {
+        } else if (message.type === "bot") {
             from = (message as BotMessage).sender.username;
         } else {
             from = "Unknown"
@@ -57,7 +57,8 @@ export function DisplayedMessage(props: displayedMessageProps) {
 
         if (message.type === "system") {
             return (
-                <Box style={{opacity: "50%"}} align={"center"} direction={"row"} gap={"small"} justify={"around"} background={"light-1"}
+                <Box style={{opacity: "50%"}} align={"center"} direction={"row"} gap={"small"} justify={"around"}
+                     background={"light-1"}
                      pad={"small"}>
                     <Box direction={"row"} gap={"small"} align={"center"} justify={"around"}>
                         <Actions size={"small"}/>
@@ -66,7 +67,7 @@ export function DisplayedMessage(props: displayedMessageProps) {
                     </Box>
                 </Box>
             );
-        } else if (message.type === "hooks") {
+        } else if (message.type === "bot") {
             return (
                 <Box align={"center"} direction={"row"} gap={"small"} justify={"around"} background={"light-2"}
                      round={"small"} pad={"small"}>
