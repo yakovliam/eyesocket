@@ -1,8 +1,12 @@
 # eyesocket
 
-A platform to freely express yourself without consequence
+A platform to freely express yourself.
 
 This client/server bundle is designed to create a space where you can speak your mind freely.
+
+# features
+
+This platform features a fully-functional chat application with a main hub server, 3rd party hosted servers (like discord), self-hosted-bots, and command processing engines.
 
 # symlinks
 
